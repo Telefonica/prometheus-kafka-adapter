@@ -1,0 +1,13 @@
+sudo: required
+
+language: minimal
+
+services:
+  - docker
+
+install:
+  - docker build -t telefonica/prometheus-kafka-adapter .
+
+git:
+  depth: 1
+  quiet: true
