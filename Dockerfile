@@ -8,5 +8,9 @@ ADD . /src/prometheus-kafka-adapter
 RUN go build -o /prometheus-kafka-adapter
 
 FROM alpine
+
+RUN apk add --no-cache librdkafka
+
 COPY --from=build /prometheus-kafka-adapter /
-CMD prometheus-kafka-adapter
+
+CMD /prometheus-kafka-adapter
