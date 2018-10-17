@@ -23,6 +23,7 @@ import (
 )
 
 func processWriteRequest(req *prompb.WriteRequest) ([][]byte, error) {
+	logrus.WithField("var", req).Debugln()
 	result := [][]byte{}
 
 	for _, ts := range req.Timeseries {
@@ -32,20 +33,22 @@ func processWriteRequest(req *prompb.WriteRequest) ([][]byte, error) {
 			labels[model.LabelName(l.Name)] = model.LabelValue(l.Value)
 		}
 
-		metric := make(map[string]interface{}, len(labels)+2)
-		metric["__value"] = ts.Samples[0].Value
-		metric["__timestamp"] = ts.Samples[0].Timestamp
+		for _, sample := range ts.Samples {
+			metric := make(map[string]interface{}, len(labels)+2)
+			metric["__value__"] = sample.Value
+			metric["__timestamp__"] = sample.Timestamp
 
-		for key, value := range labels {
-			metric[string(key)] = value
+			for key, value := range labels {
+				metric[string(key)] = value
+			}
+
+			data, err := json.Marshal(metric)
+			if err != nil {
+				logrus.WithError(err).Errorln("couldn't proccess timeseries")
+			}
+
+			result = append(result, data)
 		}
-
-		data, err := json.Marshal(metric)
-		if err != nil {
-			logrus.WithError(err).Errorln("couldn't proccess timeseries")
-		}
-
-		result = append(result, data)
 	}
 
 	return result, nil
