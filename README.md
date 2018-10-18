@@ -2,13 +2,11 @@
 
 [![Build Status](https://travis-ci.org/Telefonica/prometheus-kafka-adapter.svg?branch=master)](https://travis-ci.org/Telefonica/prometheus-kafka-adapter)
 
-prometheus-kafka-adapter is a service which receives [Prometheus](https://github.com/prometheus) requests through [`remote_write`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write), marshal into JSON and sends them into [Kafka](https://github.com/apache/kafka).
-
+Prometheus-kafka-adapter is a service which receives [Prometheus](https://github.com/prometheus) metrics through [`remote_write`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write), marshal into JSON and sends them into [Kafka](https://github.com/apache/kafka).
 
 ## motivation
 
-We use `prometheus-kafka-adapter` internally at Telefonica for dumping Prometheus metrics into an object store in diferent clouds, through [Kafka](https://github.com/apache/kafka) and Kafka-Connect.
-
+We use `prometheus-kafka-adapter` internally at Telefonica for dumping Prometheus metrics into an object storage in diferent clouds, through [Kafka](https://github.com/apache/kafka) and Kafka-Connect.
 
 ## output
 
@@ -32,14 +30,26 @@ It produces the following messages in a kafka topic:
 
 ## configuration
 
-It can be configured with the following environment variables:
+### prometheus-kafka-adapter
 
-- `LOG_LEVEL`: defines log level for [`logrus`](https://github.com/sirupsen/logrus), can be `debug`, `info`, `warn`, `error`, `fatal` or `panic`, defaults to `info`.
+There is a docker image `telefonica/prometheus-kafka-adapter:1.1.0-dev-4` [available on Docker Hub](https://hub.docker.com/r/telefonica/prometheus-kafka-adapter/).
+
+Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends them to Kafka. This behaviour can be configured with the following environment variables:
+
 - `KAFKA_BROKER_LIST`: defines kafka endpoint and port, defaults to `kafka:9092`.
 - `KAFKA_TOPIC`: defines kafka topic to be used, defaults to `metrics`.
 - `PORT`: defines http port to listen, defaults to `8080`, used directly by [gin](https://github.com/gin-gonic/gin).
+- `LOG_LEVEL`: defines log level for [`logrus`](https://github.com/sirupsen/logrus), can be `debug`, `info`, `warn`, `error`, `fatal` or `panic`, defaults to `info`.
 - `GIN_MODE`: manage [gin](https://github.com/gin-gonic/gin) debug logging, can be `debug` or `release`.
 
+### prometheus
+
+Prometheus needs to have a `remote_write` url configured, pointing to the '/receive' endpoint of the host and port where the prometheus-kafka-adapter service is running. For example:
+
+```yaml
+remote_write:
+  - url: "http://prometheus-kafka-adapter:8080/receive"
+```
 
 ## contributing
 
@@ -50,7 +60,7 @@ With issues:
 
 With pull requests:
   - Open your pull request against `master`
-  - It should pass all tests in the available continuous integrations systems such as TravisCI.
+  - It should pass all tests in the continuous integrations system (TravisCI).
   - You should add/modify tests to cover your proposed code changes.
   - If your pull request contains a new feature, please document it on the README.
 
