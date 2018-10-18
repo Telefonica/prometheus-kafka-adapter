@@ -4,6 +4,32 @@
 
 prometheus-kafka-adapter is a service which receives [Prometheus](https://github.com/prometheus) requests through [`remote_write`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write), marshal into JSON and sends them into [Kafka](https://github.com/apache/kafka).
 
+
+## motivation
+
+We use `prometheus-kafka-adapter` internally at Telefonica for dumping Prometheus metrics into an object store in diferent clouds, through [Kafka](https://github.com/apache/kafka) and Kafka-Connect.
+
+
+## output
+
+It produces the following messages in a kafka topic:
+
+```json
+{
+  "__timestamp__": 1234567890,
+  "__value__": 9876543210,
+  
+  "__name__": "up",
+  "job": "federation",
+
+  "label1": "value1",
+  "label2": "value2"
+}
+```
+
+`__timestamp__` and `__value__` are reserved values, and can't be used as label names. `__name__` defines the name of the metric.
+
+
 ## configuration
 
 It can be configured with the following environment variables:
@@ -12,6 +38,8 @@ It can be configured with the following environment variables:
 - `KAFKA_BROKER_LIST`: defines kafka endpoint and port, defaults to `kafka:9092`.
 - `KAFKA_TOPIC`: defines kafka topic to be used, defaults to `metrics`.
 - `PORT`: defines http port to listen, defaults to `8080`, used directly by [gin](https://github.com/gin-gonic/gin).
+- `GIN_MODE`: manage [gin](https://github.com/gin-gonic/gin) debug logging, can be `debug` or `release`.
+
 
 ## contributing
 
