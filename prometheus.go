@@ -16,6 +16,7 @@ package main
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/prompb"
@@ -35,7 +36,7 @@ func processWriteRequest(req *prompb.WriteRequest) ([][]byte, error) {
 
 		for _, sample := range ts.Samples {
 			metric := make(map[string]interface{}, len(labels)+2)
-			metric["__value__"] = sample.Value
+			metric["__value__"] = strconv.FormatFloat(sample.Value, 'f', -1, 64)
 			metric["__timestamp__"] = sample.Timestamp
 
 			for key, value := range labels {
