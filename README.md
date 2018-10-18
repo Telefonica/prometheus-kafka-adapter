@@ -15,7 +15,7 @@ It produces the following messages in a kafka topic:
 ```json
 {
   "__timestamp__": 1234567890,
-  "__value__": 9876543210,
+  "__value__": "9876543210",
   
   "__name__": "up",
   "job": "federation",
