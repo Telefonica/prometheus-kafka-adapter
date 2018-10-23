@@ -10,34 +10,42 @@ We use `prometheus-kafka-adapter` internally at Telefonica for dumping Prometheu
 
 ## output
 
-It produces the following messages in a kafka topic:
+It is able to write JSON or Avro-JSON messages in a kafka topic, depending on the `SERIALIZATION_FORMAT` configuration variable.
+
+### JSON
 
 ```json
 {
-  "__timestamp__": 1234567890,
-  "__value__": 9876543210,
-  
-  "__name__": "up",
-  "job": "federation",
+  "timestamp": 1234567890,
+  "value": "9876543210",
+  "name": "up",
 
-  "label1": "value1",
-  "label2": "value2"
+  "labels": {
+    "__name__": "up",
+    "job": "federation",
+    "label1": "value1",
+    "label2": "value2"
+  }
 }
 ```
 
-`__timestamp__` and `__value__` are reserved values, and can't be used as label names. `__name__` defines the name of the metric.
+`timestamp` and `value` are reserved values, and can't be used as label names. `__name__` is a special label that defines the name of the metric and is copied as `name` to the top level for convenience.
 
+### Avro JSON
+
+The Avro-JSON serialization is the same. See the [Avro schema](./schemas/metric.avsc).
 
 ## configuration
 
 ### prometheus-kafka-adapter
 
-There is a docker image `telefonica/prometheus-kafka-adapter:1.1.0-dev-4` [available on Docker Hub](https://hub.docker.com/r/telefonica/prometheus-kafka-adapter/).
+There is a docker image `telefonica/prometheus-kafka-adapter:1.1.0` [available on Docker Hub](https://hub.docker.com/r/telefonica/prometheus-kafka-adapter/).
 
 Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends them to Kafka. This behaviour can be configured with the following environment variables:
 
 - `KAFKA_BROKER_LIST`: defines kafka endpoint and port, defaults to `kafka:9092`.
 - `KAFKA_TOPIC`: defines kafka topic to be used, defaults to `metrics`.
+- `SERIALIZATION_FORMAT`: defines the serialization format, can be `json`, `avro-json`, defaults to `json`.
 - `PORT`: defines http port to listen, defaults to `8080`, used directly by [gin](https://github.com/gin-gonic/gin).
 - `LOG_LEVEL`: defines log level for [`logrus`](https://github.com/sirupsen/logrus), can be `debug`, `info`, `warn`, `error`, `fatal` or `panic`, defaults to `info`.
 - `GIN_MODE`: manage [gin](https://github.com/gin-gonic/gin) debug logging, can be `debug` or `release`.
@@ -49,6 +57,13 @@ Prometheus needs to have a `remote_write` url configured, pointing to the '/rece
 ```yaml
 remote_write:
   - url: "http://prometheus-kafka-adapter:8080/receive"
+```
+
+## development
+
+```
+go test
+go build
 ```
 
 ## contributing

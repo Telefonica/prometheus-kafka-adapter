@@ -24,11 +24,11 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/golang/snappy"
 
-	"github.com/prometheus/prometheus/prompb"
 	"github.com/gogo/protobuf/proto"
+	"github.com/prometheus/prometheus/prompb"
 )
 
-func receiveHandler(p *kafka.Producer) func(c *gin.Context) {
+func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		httpRequestsTotal.Add(float64(1))
 
@@ -61,11 +61,11 @@ func receiveHandler(p *kafka.Producer) func(c *gin.Context) {
 		}
 
 		for _, metric := range metrics {
-			err := p.Produce(&kafka.Message{
+			err := producer.Produce(&kafka.Message{
 				TopicPartition: kafkaPartition,
 				Value:          metric,
 			}, nil)
-		
+
 			if err != nil {
 				c.AbortWithStatus(http.StatusInternalServerError)
 				logrus.WithError(err).Error("couldn't produce message in kafka")

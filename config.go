@@ -28,6 +28,7 @@ var (
 		Topic:     &kafkaTopic,
 		Partition: kafka.PartitionAny,
 	}
+	serializer Serializer
 )
 
 func init() {
@@ -50,6 +51,14 @@ func init() {
 			Partition: kafka.PartitionAny,
 		}
 	}
+
+	if value := os.Getenv("SERIALIZATION_FORMAT"); value != "" {
+		var err error
+		serializer, err = parseSerializationFormat(value)
+		if err != nil {
+			logrus.WithError(err).Fatalln("couldn't create a metrics serializer")
+		}
+	}
 }
 
 func parseLogLevel(value string) logrus.Level {
@@ -61,4 +70,16 @@ func parseLogLevel(value string) logrus.Level {
 	}
 
 	return level
+}
+
+func parseSerializationFormat(value string) (Serializer, error) {
+	switch value {
+	case "json":
+		return NewJSONSerializer()
+	case "avro-json":
+		return NewAvroJSONSerializer("schemas/metric.avsc")
+	default:
+		logrus.WithField("serialization-format-value", value).Warningln("invalid serialization format, using json")
+		return NewJSONSerializer()
+	}
 }
