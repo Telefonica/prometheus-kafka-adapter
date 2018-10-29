@@ -52,12 +52,10 @@ func init() {
 		}
 	}
 
-	if value := os.Getenv("SERIALIZATION_FORMAT"); value != "" {
-		var err error
-		serializer, err = parseSerializationFormat(value)
-		if err != nil {
-			logrus.WithError(err).Fatalln("couldn't create a metrics serializer")
-		}
+	var err error
+	serializer, err = parseSerializationFormat(os.Getenv("SERIALIZATION_FORMAT"))
+	if err != nil {
+		logrus.WithError(err).Fatalln("couldn't create a metrics serializer")
 	}
 }
 
