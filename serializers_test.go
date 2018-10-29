@@ -18,7 +18,7 @@ func NewWriteRequest() *prompb.WriteRequest {
 				},
 				Samples: []*prompb.Sample{
 					&prompb.Sample{Timestamp: 0, Value: 456},
-					&prompb.Sample{Timestamp: 10, Value: math.Inf(1)},
+					&prompb.Sample{Timestamp: 10000, Value: math.Inf(1)},
 				},
 			},
 		},

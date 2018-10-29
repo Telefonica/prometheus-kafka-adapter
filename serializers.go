@@ -44,7 +44,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 		}
 
 		for _, sample := range ts.Samples {
-			epoch := time.Unix(sample.Timestamp, 0).UTC()
+			epoch := time.Unix(sample.Timestamp/1000, 0).UTC()
 
 			m := map[string]interface{}{
 				"timestamp": epoch.Format(time.RFC3339),
