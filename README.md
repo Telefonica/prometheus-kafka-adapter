@@ -16,13 +16,12 @@ It is able to write JSON or Avro-JSON messages in a kafka topic, depending on th
 
 ```json
 {
-  "timestamp": 1234567890,
+  "timestamp": "1970-01-01T00:00:00Z",
   "value": "9876543210",
   "name": "up",
 
   "labels": {
     "__name__": "up",
-    "job": "federation",
     "label1": "value1",
     "label2": "value2"
   }
