@@ -15,41 +15,11 @@
 package main
 
 import (
-	"encoding/json"
-
-	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/prompb"
 	"github.com/sirupsen/logrus"
 )
 
 func processWriteRequest(req *prompb.WriteRequest) ([][]byte, error) {
 	logrus.WithField("var", req).Debugln()
-	result := [][]byte{}
-
-	for _, ts := range req.Timeseries {
-		labels := make(model.Metric, len(ts.Labels))
-
-		for _, l := range ts.Labels {
-			labels[model.LabelName(l.Name)] = model.LabelValue(l.Value)
-		}
-
-		for _, sample := range ts.Samples {
-			metric := make(map[string]interface{}, len(labels)+2)
-			metric["__value__"] = sample.Value
-			metric["__timestamp__"] = sample.Timestamp
-
-			for key, value := range labels {
-				metric[string(key)] = value
-			}
-
-			data, err := json.Marshal(metric)
-			if err != nil {
-				logrus.WithError(err).Errorln("couldn't proccess timeseries")
-			}
-
-			result = append(result, data)
-		}
-	}
-
-	return result, nil
+	return Serialize(serializer, req)
 }

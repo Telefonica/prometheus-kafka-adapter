@@ -18,17 +18,17 @@ import (
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/containous/traefik/log"
 	"github.com/gin-gonic/contrib/ginrus"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
 	log.Info("creating kafka producer")
 
-	p, err := kafka.NewProducer(&kafka.ConfigMap{
+	producer, err := kafka.NewProducer(&kafka.ConfigMap{
 		"bootstrap.servers":   kafkaBrokerList,
 		"go.batch.producer":   true,  // Enable batch producer (for increased performance).
 		"go.delivery.reports": false, // per-message delivery reports to the Events() channel
@@ -42,7 +42,7 @@ func main() {
 
 	r.Use(ginrus.Ginrus(logrus.StandardLogger(), time.RFC3339, true), gin.Recovery())
 
-	r.POST("/receive", receiveHandler(p))
+	r.POST("/receive", receiveHandler(producer, serializer))
 	r.GET("/metrics", gin.WrapH(prometheus.UninstrumentedHandler()))
 
 	r.Run()
