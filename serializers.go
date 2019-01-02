@@ -50,7 +50,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 				"timestamp": epoch.Format(time.RFC3339),
 				"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
 				"name":      string(labels["__name__"]),
-				"labels":    labels,
+				"tags":    labels,
 			}
 
 			data, err := s.Marshal(m)
