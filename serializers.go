@@ -18,14 +18,13 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"strconv"
-	"time"
-
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/prompb"
 	"github.com/sirupsen/logrus"
 
 	"github.com/linkedin/goavro"
 	"strings"
+	"time"
 )
 
 // Serializer represents an abstract metrics serializer
@@ -49,10 +48,11 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 		for _, sample := range ts.Samples {
 			metricsName := string(labels["__name__"])
 			if strings.Contains(metricsName, "container"){
-				epoch := time.Unix(sample.Timestamp/1000, 0).UTC()
+				epoch := time.Unix(sample.Timestamp/1000, 0).Unix()
 
 				m := map[string]interface{}{
-					"timestamp": epoch.Format(time.RFC3339),
+					//"timestamp": epoch.Format(time.RFC3339),
+					"timestamp": epoch,
 					"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
 					"name":      string(labels["__name__"]),
 					"tags":    labels,
