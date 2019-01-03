@@ -48,8 +48,10 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 		for _, sample := range ts.Samples {
 			metricsName := string(labels["__name__"])
 			metricsNamespace := string(labels["namespace"])
+			metricsContainerName := string(labels["container_name"])
 			if strings.Contains(metricsName, "container") &&
-				metricsNamespace == "dev"{
+				metricsNamespace == "dev" &&
+				metricsContainerName != "POD"{
 				//epoch := time.Unix(sample.Timestamp/1000, 0).Unix()
 
 				m := map[string]interface{}{
