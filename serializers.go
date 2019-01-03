@@ -87,7 +87,9 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 				err,podIP := GetPodIP(metricsNamespace,endpoint)
 				if err != nil {
 					fmt.Println(err)
+					fmt.Println(sample)
 				}
+
 
 				m := map[string]interface{}{
 					//"timestamp": epoch.Format(time.RFC3339),
