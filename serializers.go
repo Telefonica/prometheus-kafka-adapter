@@ -24,6 +24,7 @@ import (
 
 	"github.com/linkedin/goavro"
 	"strings"
+	"time"
 )
 
 // Serializer represents an abstract metrics serializer
@@ -53,7 +54,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 
 				m := map[string]interface{}{
 					//"timestamp": epoch.Format(time.RFC3339),
-					"timestamp": sample.Timestamp,
+					"timestamp": time.Unix(sample.Timestamp/1000, 0),
 					"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
 					"metric":      string(labels["__name__"]),
 					"tags":    labels,
