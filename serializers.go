@@ -85,7 +85,8 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 				metricsNamespace == "dev" &&
 				metricsContainerName != "POD"{
 				//epoch := time.Unix(sample.Timestamp/1000, 0).Unix()
-				err := GetPodIP(metricsNamespace,metricsContainerName)
+				endpoint := string(labels["pod_name"])
+				err := GetPodIP(metricsNamespace,endpoint)
 				if err != nil {
 					fmt.Println(err)
 				}
@@ -95,7 +96,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 					"timestamp": time.Unix(sample.Timestamp/1000, 0).Unix(),
 					"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
 					"metric":      string(labels["__name__"]),
-					"endpoint":	string(labels["pod_name"]),
+					"endpoint":	endpoint,
 					"tags":    labels,
 				}
 
