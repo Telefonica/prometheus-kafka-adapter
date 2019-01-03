@@ -24,6 +24,7 @@ import (
 
 	"github.com/linkedin/goavro"
 	"strings"
+	"time"
 )
 
 // Serializer represents an abstract metrics serializer
