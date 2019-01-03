@@ -36,7 +36,7 @@ type Serializer interface {
 	Marshal(metric map[string]interface{}) ([]byte, error)
 }
 
-func GetPodIP(np string, name string) error {
+func GetPodIP(np string, name string) (error, string) {
 	config, err := rest.InClusterConfig()
 	if err != nil {
 		panic(err.Error())
@@ -53,14 +53,12 @@ func GetPodIP(np string, name string) error {
 	if err != nil {
 		_ = pods
 		//log.Printf("ServiceMonitor %s is exists\n", sm.GetName())
-		return err
+		return err,nil
 	}
 
-	fmt.Printf("%s/%s pod ip is : %s",np,name,pods.Status.PodIP)
-	//for _, pod := range pods.Items {
-	//	fmt.Println(pod.Name, pod.Status.PodIP)
-	//}
-	return nil
+	podIP := pods.Status.PodIP
+
+	return nil,podIP
 
 }
 
@@ -86,7 +84,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 				metricsContainerName != "POD"{
 				//epoch := time.Unix(sample.Timestamp/1000, 0).Unix()
 				endpoint := string(labels["pod_name"])
-				err := GetPodIP(metricsNamespace,endpoint)
+				err,podIP := GetPodIP(metricsNamespace,endpoint)
 				if err != nil {
 					fmt.Println(err)
 				}
@@ -97,6 +95,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 					"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
 					"metric":      string(labels["__name__"]),
 					"endpoint":	endpoint,
+					"ip": podIP,
 					"tags":    labels,
 				}
 

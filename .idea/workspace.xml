@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d3a1790f-8f5b-4c72-8692-662f480f2815" name="Default" comment="" />
+    <list default="true" id="d3a1790f-8f5b-4c72-8692-662f480f2815" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/serializers.go" beforeDir="false" afterPath="$PROJECT_DIR$/serializers.go" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,8 +34,8 @@
       <file leaf-file-name="serializers.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/serializers.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="321">
-              <caret line="88" column="58" lean-forward="true" selection-start-line="88" selection-start-column="58" selection-end-line="88" selection-end-column="58" />
+            <state relative-caret-position="463">
+              <caret line="97" column="32" selection-start-line="97" selection-start-column="32" selection-end-line="97" selection-end-column="32" />
               <folding>
                 <element signature="e#602#804#0" expanded="true" />
               </folding>
@@ -222,8 +224,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/serializers.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="88" column="58" lean-forward="true" selection-start-line="88" selection-start-column="58" selection-end-line="88" selection-end-column="58" />
+        <state relative-caret-position="463">
+          <caret line="97" column="32" selection-start-line="97" selection-start-column="32" selection-end-line="97" selection-end-column="32" />
           <folding>
             <element signature="e#602#804#0" expanded="true" />
           </folding>
