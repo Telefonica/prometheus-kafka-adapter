@@ -25,6 +25,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/linkedin/goavro"
+	"strings"
 )
 
 // Serializer represents an abstract metrics serializer
@@ -37,28 +38,33 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 	result := [][]byte{}
 
 	for _, ts := range req.Timeseries {
+
 		labels := make(map[string]string, len(ts.Labels))
 
 		for _, l := range ts.Labels {
 			labels[string(model.LabelName(l.Name))] = string(model.LabelValue(l.Value))
 		}
 
+
 		for _, sample := range ts.Samples {
-			epoch := time.Unix(sample.Timestamp/1000, 0).UTC()
+			metricsName := string(labels["__name__"])
+			if strings.Contains(metricsName, "container"){
+				epoch := time.Unix(sample.Timestamp/1000, 0).UTC()
 
-			m := map[string]interface{}{
-				"timestamp": epoch.Format(time.RFC3339),
-				"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
-				"name":      string(labels["__name__"]),
-				"tags":    labels,
+				m := map[string]interface{}{
+					"timestamp": epoch.Format(time.RFC3339),
+					"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
+					"name":      string(labels["__name__"]),
+					"tags":    labels,
+				}
+
+				data, err := s.Marshal(m)
+				if err != nil {
+					logrus.WithError(err).Errorln("couldn't marshal timeseries")
+				}
+
+				result = append(result, data)
 			}
-
-			data, err := s.Marshal(m)
-			if err != nil {
-				logrus.WithError(err).Errorln("couldn't marshal timeseries")
-			}
-
-			result = append(result, data)
 		}
 	}
 
