@@ -53,7 +53,7 @@ func GetPodIP(np string, name string) (error, string) {
 	if err != nil {
 		_ = pods
 		//log.Printf("ServiceMonitor %s is exists\n", sm.GetName())
-		return err,nil
+		return err,""
 	}
 
 	podIP := pods.Status.PodIP
