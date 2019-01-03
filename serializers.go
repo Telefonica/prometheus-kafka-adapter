@@ -85,7 +85,10 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 				metricsNamespace == "dev" &&
 				metricsContainerName != "POD"{
 				//epoch := time.Unix(sample.Timestamp/1000, 0).Unix()
-				GetPodIP(metricsNamespace,metricsContainerName)
+				err := GetPodIP(metricsNamespace,metricsContainerName)
+				if err != nil {
+					fmt.Println(err)
+				}
 
 				m := map[string]interface{}{
 					//"timestamp": epoch.Format(time.RFC3339),
