@@ -56,7 +56,7 @@ func GetPodIP(np string, name string) error {
 		return err
 	}
 
-	fmt.Println(pods.Status.PodIP)
+	fmt.Printf("%s/%s pod ip is : %s",np,name,pods.Status.PodIP)
 	//for _, pod := range pods.Items {
 	//	fmt.Println(pod.Name, pod.Status.PodIP)
 	//}
