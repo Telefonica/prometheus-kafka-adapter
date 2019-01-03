@@ -21,15 +21,47 @@ import (
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/prompb"
 	"github.com/sirupsen/logrus"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/linkedin/goavro"
 	"strings"
 	"time"
+	"fmt"
 )
 
 // Serializer represents an abstract metrics serializer
 type Serializer interface {
 	Marshal(metric map[string]interface{}) ([]byte, error)
+}
+
+func GetPodIP(np string, name string) error {
+	config, err := rest.InClusterConfig()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	// Creates the dynamic interface.
+	clientset, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	pods, err := clientset.CoreV1().Pods(np).Get(name,metav1.GetOptions{})
+
+	if err != nil {
+		_ = pods
+		//log.Printf("ServiceMonitor %s is exists\n", sm.GetName())
+		return err
+	}
+
+	fmt.Println(pods.Status.PodIP)
+	//for _, pod := range pods.Items {
+	//	fmt.Println(pod.Name, pod.Status.PodIP)
+	//}
+	return nil
+
 }
 
 // Serialize generates the JSON representation for a given Prometheus metric.
@@ -53,6 +85,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 				metricsNamespace == "dev" &&
 				metricsContainerName != "POD"{
 				//epoch := time.Unix(sample.Timestamp/1000, 0).Unix()
+				GetPodIP(metricsNamespace,metricsContainerName)
 
 				m := map[string]interface{}{
 					//"timestamp": epoch.Format(time.RFC3339),
