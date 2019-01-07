@@ -24,11 +24,11 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	"github.com/linkedin/goavro"
 	"strings"
 	"time"
 	"fmt"
+	"net/http"
 )
 
 // Serializer represents an abstract metrics serializer
@@ -36,30 +36,58 @@ type Serializer interface {
 	Marshal(metric map[string]interface{}) ([]byte, error)
 }
 
+type PodInfo struct {
+	Pod_IP	string `json:"pod_ip"`
+	Pod_Name	string	`json:"pod_name"`
+}
+
+//func GetPodIP(np string, name string) (error, string) {
+//	config, err := rest.InClusterConfig()
+//	if err != nil {
+//		panic(err.Error())
+//	}
+//
+//	// Creates the dynamic interface.
+//	clientset, err := kubernetes.NewForConfig(config)
+//	if err != nil {
+//		panic(err.Error())
+//	}
+//
+//	//podsListWatcher := cache1.NewListWatchFromClient(clientset.CoreV1().RESTClient(),"pod",np,fields.Everything())
+//	//queue := workqueue.NewRateLimitingQueue(workqueue.DefaultControllerRateLimiter())
+//	pods, err := clientset.CoreV1().Pods(np).Get(name,metav1.GetOptions{})
+//
+//	if err != nil {
+//		_ = pods
+//		//log.Printf("ServiceMonitor %s is exists\n", sm.GetName())
+//		return err,""
+//	}
+//
+//	podIP := pods.Status.PodIP
+//
+//	return nil,podIP
+//
+//}
+
 func GetPodIP(np string, name string) (error, string) {
-	config, err := rest.InClusterConfig()
+	res, err := http.Post("http://192.168.5.157:8080/api/search",name)
 	if err != nil {
-		panic(err.Error())
+		fmt.Println("Fatal error ", err.Error())
 	}
 
-	// Creates the dynamic interface.
-	clientset, err := kubernetes.NewForConfig(config)
+	defer res.Body.Close()
+
+	content, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		panic(err.Error())
+		fmt.Println("Fatal error ", err.Error())
 	}
-
-	pods, err := clientset.CoreV1().Pods(np).Get(name,metav1.GetOptions{})
-
-	if err != nil {
-		_ = pods
-		//log.Printf("ServiceMonitor %s is exists\n", sm.GetName())
+	var podInfo PodInfo
+	if err := json.Unmarshal(content, &podInfo); err == nil {
+		return nil,podInfo.Pod_IP
+	}else {
 		return err,""
+
 	}
-
-	podIP := pods.Status.PodIP
-
-	return nil,podIP
-
 }
 
 // Serialize generates the JSON representation for a given Prometheus metric.
