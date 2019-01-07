@@ -67,8 +67,8 @@ type PodInfo struct {
 //
 //}
 
-func GetPodIP(np string, name string) (error, string) {
-	res, err := http.Post("http://192.168.5.157:8080/api/search","",bytes.NewBuffer([]byte(name)))
+func GetPodIP(np string, name string,k8swatch string) (error, string) {
+	res, err := http.Post(k8swatch,"",bytes.NewBuffer([]byte(name)))
 	if err != nil {
 		fmt.Println("Fatal error ", err.Error())
 	}
@@ -89,7 +89,7 @@ func GetPodIP(np string, name string) (error, string) {
 }
 
 // Serialize generates the JSON representation for a given Prometheus metric.
-func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
+func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string) ([][]byte, error) {
 	result := [][]byte{}
 
 	for _, ts := range req.Timeseries {
@@ -117,7 +117,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 					endpoint = string(labels["pod"])
 				}
 
-				err,podIP := GetPodIP(metricsNamespace,endpoint)
+				err,podIP := GetPodIP(metricsNamespace,endpoint,k8swatch)
 				if err != nil {
 					fmt.Println(err)
 					fmt.Println(labels)

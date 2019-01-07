@@ -42,7 +42,7 @@ func main() {
 
 	r.Use(ginrus.Ginrus(logrus.StandardLogger(), time.RFC3339, true), gin.Recovery())
 
-	r.POST("/receive", receiveHandler(producer, serializer))
+	r.POST("/receive", receiveHandler(producer, serializer,k8sWachList))
 	r.GET("/metrics", gin.WrapH(prometheus.UninstrumentedHandler()))
 
 	r.Run()

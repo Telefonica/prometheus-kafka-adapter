@@ -28,7 +28,7 @@ import (
 	"github.com/prometheus/prometheus/prompb"
 )
 
-func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin.Context) {
+func receiveHandler(producer *kafka.Producer, serializer Serializer, k8swatch string) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		httpRequestsTotal.Add(float64(1))
 
@@ -53,7 +53,7 @@ func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin
 			return
 		}
 
-		metrics, err := processWriteRequest(&req)
+		metrics, err := processWriteRequest(&req,k8swatch)
 		if err != nil {
 			c.AbortWithStatus(http.StatusInternalServerError)
 			logrus.WithError(err).Error("couldn't process write request")
