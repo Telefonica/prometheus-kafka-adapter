@@ -24,6 +24,7 @@ import (
 var (
 	kafkaBrokerList = "kafka:9092"
 	kafkaTopic      = "metrics"
+	k8sWachList = "http://k8s-watch-adapter-svc:8080"
 	kafkaPartition  = kafka.TopicPartition{
 		Topic:     &kafkaTopic,
 		Partition: kafka.PartitionAny,
@@ -42,6 +43,11 @@ func init() {
 	if value := os.Getenv("KAFKA_BROKER_LIST"); value != "" {
 		kafkaBrokerList = value
 	}
+
+	if value := os.Getenv("K8S_WATCH_LIST"); value != "" {
+		k8sWachList = value
+	}
+
 
 	if value := os.Getenv("KAFKA_TOPIC"); value != "" {
 		kafkaTopic = value
