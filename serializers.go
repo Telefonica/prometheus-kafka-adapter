@@ -22,7 +22,6 @@ import (
 	"github.com/prometheus/prometheus/prompb"
 	"github.com/sirupsen/logrus"
 	"github.com/linkedin/goavro"
-	"strings"
 	"time"
 	"fmt"
 	"net/http"
@@ -105,7 +104,8 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string) ([][]byte
 			metricsName := string(labels["__name__"])
 			metricsNamespace := string(labels["namespace"])
 			metricsContainerName := string(labels["container_name"])
-			if strings.Contains(metricsName, "container") &&
+			//if strings.Contains(metricsName, "container") &&
+			if metricsName == "container_cpu_usage_seconds_total" &&
 				metricsNamespace == "dev" &&
 				metricsContainerName != "POD"{
 				//epoch := time.Unix(sample.Timestamp/1000, 0).Unix()
