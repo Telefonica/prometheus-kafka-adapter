@@ -21,14 +21,12 @@ import (
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/prompb"
 	"github.com/sirupsen/logrus"
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"github.com/linkedin/goavro"
 	"strings"
 	"time"
 	"fmt"
 	"net/http"
+	"bytes"
 )
 
 // Serializer represents an abstract metrics serializer
@@ -70,7 +68,7 @@ type PodInfo struct {
 //}
 
 func GetPodIP(np string, name string) (error, string) {
-	res, err := http.Post("http://192.168.5.157:8080/api/search",name)
+	res, err := http.Post("http://192.168.5.157:8080/api/search","",bytes.NewBuffer([]byte(name)))
 	if err != nil {
 		fmt.Println("Fatal error ", err.Error())
 	}
