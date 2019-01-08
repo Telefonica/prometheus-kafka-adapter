@@ -139,6 +139,8 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 					"endpoint":	endpoint,
 					"ip": podIP,
 					"tags":    labels,
+					"counterType": "GAUGE",
+					"setp": 30,
 				}
 
 				data, err := s.Marshal(m)

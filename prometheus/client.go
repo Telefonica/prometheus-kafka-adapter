@@ -97,7 +97,7 @@ func (v *QueryRangeResponseValue) Time() time.Time {
 }
 
 
-func GetPromContainerCpuUsage(pod_name string,prom_url string,sample int64) (timestamp string,value string,err error){
+func GetPromContainerCpuUsage(pod_name string,prom_url string,sample int64) (timestamp int64,value float64,err error){
 	//query_str := "100 * (1 - avg by(instance_type, availability_zone)(irate(node_cpu{mode='idle'}[5m])))"
 	query_str := "sum by (container_name) (rate(container_cpu_usage_seconds_total{job='kubelet', image!='',container_name!='POD',pod_name='" + pod_name + "'}[1m]))"
 
@@ -110,8 +110,7 @@ func GetPromContainerCpuUsage(pod_name string,prom_url string,sample int64) (tim
 		onError(err)
 	}
 	var (
-		tm string
-		vl string
+		tm int64
 		vle float64
 	)
 	for _, r := range resp.Data.Result {
@@ -120,9 +119,10 @@ func GetPromContainerCpuUsage(pod_name string,prom_url string,sample int64) (tim
 			return "","",err
 		}
 
-		tm = strconv.FormatInt(r.Value.Time().Unix(),10)
+		//tm = strconv.FormatInt(r.Value.Time().Unix(),10)
+		tm = r.Value.Time().Unix()
 	}
-	vl = strconv.FormatFloat(vle,'f', -1, 64)
-	return tm,vl,nil
+	//vl = strconv.FormatFloat(vle,'f', -1, 64)
+	return tm,vle,nil
 	
 }
