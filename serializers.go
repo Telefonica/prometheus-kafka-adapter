@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"net/http"
 	"bytes"
+	"strconv"
 )
 
 // Serializer represents an abstract metrics serializer
@@ -128,13 +129,27 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 					return nil,err
 				}
 
+				reqcpuName := endpoint + "_req_cpu"
+
+				err,reqCPU := GetPodIP(metricsNamespace,reqcpuName,k8swatch)
+				if err != nil {
+					return nil,err
+				}
+
+				reqCpuFlat64,err := strconv.ParseFloat(reqCPU,64)
+				if err != nil {
+					return nil,err
+				}
+
+				cpuPer := value / reqCpuFlat64
+
 
 				m := map[string]interface{}{
 					//"timestamp": epoch.Format(time.RFC3339),
 					//"timestamp": time.Unix(sample.Timestamp/1000, 0).Unix(),
 					"timestamp": timestamp,
 					//"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
-					"value": value,
+					"value": cpuPer,
 					"metric":      metricsName,
 					"endpoint":	endpoint,
 					"ip": podIP,
