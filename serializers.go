@@ -20,6 +20,7 @@ import (
 	"strconv"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/prompb"
+	promcli "github.com/ghostbaby/prometheus-kafka-adapter/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/linkedin/goavro"
 	"time"
@@ -88,7 +89,7 @@ func GetPodIP(np string, name string,k8swatch string) (error, string) {
 }
 
 // Serialize generates the JSON representation for a given Prometheus metric.
-func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string) ([][]byte, error) {
+func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL string) ([][]byte, error) {
 	result := [][]byte{}
 
 	for _, ts := range req.Timeseries {
@@ -121,14 +122,22 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string) ([][]byte
 				if err != nil {
 					fmt.Println(err)
 					fmt.Println(labels)
+					return nil,err
+				}
+
+				timestamp,value,err := promcli.GetPromContainerCpuUsage(metricsName,promeURL)
+				if err != nil {
+					return nil,err
 				}
 
 
 				m := map[string]interface{}{
 					//"timestamp": epoch.Format(time.RFC3339),
-					"timestamp": time.Unix(sample.Timestamp/1000, 0).Unix(),
-					"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
-					"metric":      string(labels["__name__"]),
+					//"timestamp": time.Unix(sample.Timestamp/1000, 0).Unix(),
+					"timestamp": timestamp,
+					//"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
+					"value": value,
+					"metric":      metricsName,
 					"endpoint":	endpoint,
 					"ip": podIP,
 					"tags":    labels,
