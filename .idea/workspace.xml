@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d3a1790f-8f5b-4c72-8692-662f480f2815" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/serializers.go" beforeDir="false" afterPath="$PROJECT_DIR$/serializers.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -26,7 +25,7 @@
       <file leaf-file-name="handlers.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/handlers.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
+            <state relative-caret-position="255">
               <caret line="55" column="32" lean-forward="true" selection-start-line="55" selection-start-column="32" selection-end-line="55" selection-end-column="32" />
             </state>
           </provider>
@@ -35,8 +34,8 @@
       <file leaf-file-name="serializers.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/serializers.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="349">
-              <caret line="131" column="59" selection-start-line="131" selection-start-column="59" selection-end-line="131" selection-end-column="59" />
+            <state relative-caret-position="200">
+              <caret line="135" column="67" selection-start-line="135" selection-start-column="67" selection-end-line="135" selection-end-column="67" />
               <folding>
                 <element signature="e#602#890#0" expanded="true" />
               </folding>
@@ -466,15 +465,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/handlers.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
+        <state relative-caret-position="255">
           <caret line="55" column="32" lean-forward="true" selection-start-line="55" selection-start-column="32" selection-end-line="55" selection-end-column="32" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/serializers.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="131" column="59" selection-start-line="131" selection-start-column="59" selection-end-line="131" selection-end-column="59" />
+        <state relative-caret-position="200">
+          <caret line="135" column="67" selection-start-line="135" selection-start-column="67" selection-end-line="135" selection-end-column="67" />
           <folding>
             <element signature="e#602#890#0" expanded="true" />
           </folding>

@@ -133,7 +133,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 				fmt.Println(reqcpuName)
 
 				err,reqCPU := GetPodIP(metricsNamespace,reqcpuName,k8swatch)
-				fmt.Println(reqCPU)
+				fmt.Printf("pod %s request cpu is : %s",reqcpuName,reqCPU)
 				if err != nil {
 					return nil,err
 				}
