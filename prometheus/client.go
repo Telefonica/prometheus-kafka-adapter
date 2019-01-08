@@ -116,7 +116,7 @@ func GetPromContainerCpuUsage(pod_name string,prom_url string,sample int64) (tim
 	for _, r := range resp.Data.Result {
 		vle, err = r.Value.Value()
 		if err != nil {
-			return "","",err
+			return 0,0,err
 		}
 
 		//tm = strconv.FormatInt(r.Value.Time().Unix(),10)
