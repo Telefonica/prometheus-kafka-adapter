@@ -17,13 +17,11 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"strconv"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/prompb"
 	promcli "github.com/ghostbaby/prometheus-kafka-adapter/prometheus"
 	"github.com/sirupsen/logrus"
 	"github.com/linkedin/goavro"
-	"time"
 	"fmt"
 	"net/http"
 	"bytes"

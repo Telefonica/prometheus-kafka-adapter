@@ -1,7 +1,5 @@
 package prometheus
 
-
-
 import (
 	"encoding/json"
 	"fmt"
