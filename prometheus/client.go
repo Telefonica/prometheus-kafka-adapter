@@ -110,8 +110,8 @@ func GetPromContainerCpuUsage(pod_name string,prom_url string) (timestamp string
 		onError(err)
 	}
 	var (
-		timestamp string
-		value string
+		tm string
+		vl string
 		vle float64
 	)
 	for _, r := range resp.Data.Result {
@@ -120,9 +120,9 @@ func GetPromContainerCpuUsage(pod_name string,prom_url string) (timestamp string
 			return "","",err
 		}
 
-		timestamp = string(r.Value.Time().Unix())
+		tm = string(r.Value.Time().Unix())
 	}
-	value = strconv.FormatFloat(vle,'f', -1, 64)
-	return timestamp,value,nil
+	vl = strconv.FormatFloat(vle,'f', -1, 64)
+	return tm,vl,nil
 	
 }
