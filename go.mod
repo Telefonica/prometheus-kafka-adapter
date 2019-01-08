@@ -1,4 +1,4 @@
-module github.com/Telefonica/prometheus-kafka-adapter
+module github.com/ghostbaby/prometheus-kafka-adapter
 
 require (
 	github.com/actgardner/gogen-avro v5.1.0+incompatible // indirect
