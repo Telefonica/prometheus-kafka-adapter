@@ -97,7 +97,7 @@ func (v *QueryRangeResponseValue) Time() time.Time {
 }
 
 
-func GetPromContainerCpuUsage(pod_name string,prom_url string) (timestamp string,value string,err error){
+func GetPromContainerCpuUsage(pod_name string,prom_url string,sample int64) (timestamp string,value string,err error){
 	//query_str := "100 * (1 - avg by(instance_type, availability_zone)(irate(node_cpu{mode='idle'}[5m])))"
 	query_str := "sum by (container_name) (rate(container_cpu_usage_seconds_total{job='kubelet', image!='',container_name!='POD',pod_name='" + pod_name + "'}[1m]))"
 

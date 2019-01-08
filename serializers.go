@@ -123,7 +123,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 					return nil,err
 				}
 
-				timestamp,value,err := promcli.GetPromContainerCpuUsage(metricsName,promeURL)
+				timestamp,value,err := promcli.GetPromContainerCpuUsage(metricsName,promeURL,sample.Timestamp)
 				if err != nil {
 					return nil,err
 				}
@@ -143,7 +143,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 
 				data, err := s.Marshal(m)
 				if err != nil {
-					logrus.WithError(err).Errorln("couldn't marshal timeseries")
+					logrus.WithError(err).Errorln("couldn't marshal timeseries.")
 				}
 
 				result = append(result, data)
