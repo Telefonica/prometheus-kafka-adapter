@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d3a1790f-8f5b-4c72-8692-662f480f2815" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/prometheus/client.go" beforeDir="false" afterPath="$PROJECT_DIR$/prometheus/client.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/serializers.go" beforeDir="false" afterPath="$PROJECT_DIR$/serializers.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,11 +31,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="serializers.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="serializers.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/serializers.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
-              <caret line="120" column="36" lean-forward="true" selection-start-line="120" selection-start-column="36" selection-end-line="120" selection-end-column="36" />
+            <state relative-caret-position="144">
+              <caret line="125" column="54" selection-start-line="125" selection-start-column="54" selection-end-line="125" selection-end-column="54" />
               <folding>
                 <element signature="e#602#890#0" expanded="true" />
               </folding>
@@ -57,11 +55,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="client.go" pinned="false" current-in-tab="false">
+      <file leaf-file-name="client.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/prometheus/client.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="137">
-              <caret line="99" column="74" selection-start-line="99" selection-start-column="74" selection-end-line="99" selection-end-column="74" />
+            <state relative-caret-position="495">
+              <caret line="125" column="21" selection-start-line="125" selection-start-column="21" selection-end-line="125" selection-end-column="21" />
               <folding>
                 <element signature="e#16#96#0" expanded="true" />
               </folding>
@@ -486,22 +484,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/prometheus/client.go">
+    <entry file="file://$PROJECT_DIR$/serializers.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="99" column="74" selection-start-line="99" selection-start-column="74" selection-end-line="99" selection-end-column="74" />
+        <state relative-caret-position="144">
+          <caret line="125" column="54" selection-start-line="125" selection-start-column="54" selection-end-line="125" selection-end-column="54" />
           <folding>
-            <element signature="e#16#96#0" expanded="true" />
+            <element signature="e#602#890#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/serializers.go">
+    <entry file="file://$PROJECT_DIR$/prometheus/client.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="120" column="36" lean-forward="true" selection-start-line="120" selection-start-column="36" selection-end-line="120" selection-end-column="36" />
+        <state relative-caret-position="495">
+          <caret line="125" column="21" selection-start-line="125" selection-start-column="21" selection-end-line="125" selection-end-column="21" />
           <folding>
-            <element signature="e#602#890#0" expanded="true" />
+            <element signature="e#16#96#0" expanded="true" />
           </folding>
         </state>
       </provider>

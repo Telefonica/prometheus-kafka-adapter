@@ -123,6 +123,7 @@ func GetPromContainerCpuUsage(pod_name string,prom_url string,sample int64) (tim
 		tm = string(r.Value.Time().Unix())
 	}
 	vl = strconv.FormatFloat(vle,'f', -1, 64)
+	fmt.Println(tm,vl)
 	return tm,vl,nil
 	
 }
