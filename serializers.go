@@ -123,7 +123,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 					return nil,err
 				}
 
-				timestamp,value,err := promcli.GetPromContainerCpuUsage(metricsName,promeURL,sample.Timestamp)
+				timestamp,value,err := promcli.GetPromContainerCpuUsage(endpoint,promeURL,sample.Timestamp)
 				if err != nil {
 					return nil,err
 				}
