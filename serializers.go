@@ -129,7 +129,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 					return nil,err
 				}
 
-				reqcpuName := endpoint + "_req_cpu"
+				reqcpuName := string(labels["container_name"]) + "_req_cpu"
 				fmt.Println(reqcpuName)
 
 				err,reqCPU := GetPodIP(metricsNamespace,reqcpuName,k8swatch)
