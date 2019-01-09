@@ -225,8 +225,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 
 
 			}else if metricsName == "container_network_receive_bytes_total" &&
-				metricsNamespace == nameSpace &&
-				metricsContainerName != "POD"{
+				metricsNamespace == nameSpace {
 
 				metricsService := string(labels["service"])
 				var endpoint string
