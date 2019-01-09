@@ -139,6 +139,7 @@ func GetPromContainerNetworkUsage(pod_name string,prom_url string,sample int64) 
 	if err != nil{
 		onError(err)
 	}
+
 	var (
 		tm int64
 		vle float64

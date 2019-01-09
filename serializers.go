@@ -236,6 +236,8 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 					endpoint = string(labels["pod"])
 				}
 
+				fmt.Println(endpoint)
+
 				err,podIP := GetPodIP(metricsNamespace,endpoint,k8swatch)
 				if err != nil {
 					fmt.Println(err)
