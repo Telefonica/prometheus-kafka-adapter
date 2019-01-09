@@ -34,8 +34,8 @@
       <file leaf-file-name="serializers.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/serializers.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="135" column="67" selection-start-line="135" selection-start-column="67" selection-end-line="135" selection-end-column="67" />
+            <state relative-caret-position="255">
+              <caret line="80" column="22" selection-start-line="80" selection-start-column="22" selection-end-line="80" selection-end-column="22" />
               <folding>
                 <element signature="e#602#890#0" expanded="true" />
               </folding>
@@ -436,13 +436,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="484">
-          <caret line="60" column="35" lean-forward="true" selection-start-line="60" selection-start-column="35" selection-end-line="60" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/prometheus.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="345">
@@ -470,10 +463,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/config.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="484">
+          <caret line="60" column="35" lean-forward="true" selection-start-line="60" selection-start-column="35" selection-end-line="60" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/serializers.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="135" column="67" selection-start-line="135" selection-start-column="67" selection-end-line="135" selection-end-column="67" />
+        <state relative-caret-position="255">
+          <caret line="80" column="22" selection-start-line="80" selection-start-column="22" selection-end-line="80" selection-end-column="22" />
           <folding>
             <element signature="e#602#890#0" expanded="true" />
           </folding>

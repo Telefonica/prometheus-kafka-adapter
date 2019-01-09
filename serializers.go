@@ -78,6 +78,7 @@ func GetPodIP(np string, name string,k8swatch string) (error, string) {
 	if err != nil {
 		fmt.Println("Fatal error ", err.Error())
 	}
+	fmt.Printf(content)
 	var podInfo PodInfo
 	if err := json.Unmarshal(content, &podInfo); err == nil {
 		return nil,podInfo.Pod_IP
@@ -133,7 +134,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 				fmt.Println(reqcpuName)
 
 				err,reqCPU := GetPodIP(metricsNamespace,reqcpuName,k8swatch)
-				fmt.Printf("pod %s request cpu is : %s",reqcpuName,reqCPU)
+				fmt.Printf("pod %s request cpu is : %s\n",reqcpuName,reqCPU)
 				if err != nil {
 					return nil,err
 				}
