@@ -224,6 +224,48 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 				result = append(result, data)
 
 
+			}else if metricsName == "container_network_receive_bytes_total" &&
+				metricsNamespace == nameSpace &&
+				metricsContainerName != "POD"{
+
+				metricsService := string(labels["service"])
+				var endpoint string
+				if metricsService == "kubelet" {
+					endpoint = string(labels["pod_name"])
+				}else if metricsService == "kube-state-metrics" {
+					endpoint = string(labels["pod"])
+				}
+
+				err,podIP := GetPodIP(metricsNamespace,endpoint,k8swatch)
+				if err != nil {
+					fmt.Println(err)
+					fmt.Println(labels)
+					return nil,err
+				}
+
+				timestamp,value,err := promcli.GetPromContainerNetworkUsage(endpoint,promeURL,sample.Timestamp)
+				if err != nil {
+					return nil,err
+				}
+
+				m := map[string]interface{}{
+					//"timestamp": epoch.Format(time.RFC3339),
+					"timestamp": timestamp,
+					"value": value,
+					"metric":      metricsName,
+					"endpoint":	endpoint,
+					"ip": podIP,
+					"tags":    labels,
+					"counterType": "GAUGE",
+					"setp": 30,
+				}
+
+				data, err := s.Marshal(m)
+				if err != nil {
+					logrus.WithError(err).Errorln("couldn't marshal timeseries.")
+				}
+
+				result = append(result, data)
 			}
 		}
 	}

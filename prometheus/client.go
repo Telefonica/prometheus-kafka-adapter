@@ -98,7 +98,7 @@ func (v *QueryRangeResponseValue) Time() time.Time {
 
 
 func GetPromContainerCpuUsage(pod_name string,prom_url string,sample int64) (timestamp int64,value float64,err error){
-	//query_str := "100 * (1 - avg by(instance_type, availability_zone)(irate(node_cpu{mode='idle'}[5m])))"
+
 	query_str := "sum by (container_name) (rate(container_cpu_usage_seconds_total{job='kubelet', image!='',container_name!='POD',pod_name='" + pod_name + "'}[1m]))"
 
 	client,err := NewClient(prom_url)
@@ -125,6 +125,36 @@ func GetPromContainerCpuUsage(pod_name string,prom_url string,sample int64) (tim
 	//vl = strconv.FormatFloat(vle,'f', -1, 64)
 	return tm,vle,nil
 	
+}
+
+func GetPromContainerNetworkUsage(pod_name string,prom_url string,sample int64) (timestamp int64,value float64,err error){
+
+	query_str := "sum by (pod_name) (rate(container_network_receive_bytes_total{job='kubelet', pod_name='" + pod_name + "'}[1m]))"
+
+	client,err := NewClient(prom_url)
+	if err != nil {
+		onError(err)
+	}
+	resp,err := client.Query(query_str)
+	if err != nil{
+		onError(err)
+	}
+	var (
+		tm int64
+		vle float64
+	)
+	for _, r := range resp.Data.Result {
+		vle, err = r.Value.Value()
+		if err != nil {
+			return 0,0,err
+		}
+
+		//tm = strconv.FormatInt(r.Value.Time().Unix(),10)
+		tm = r.Value.Time().Unix()
+	}
+	//vl = strconv.FormatFloat(vle,'f', -1, 64)
+	return tm,vle,nil
+
 }
 
 
