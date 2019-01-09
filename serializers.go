@@ -26,6 +26,7 @@ import (
 	"net/http"
 	"bytes"
 	"strconv"
+	"time"
 )
 
 // Serializer represents an abstract metrics serializer
@@ -78,7 +79,7 @@ func GetPodIP(np string, name string,k8swatch string) (error, string) {
 	if err != nil {
 		fmt.Println("Fatal error ", err.Error())
 	}
-	fmt.Printf(string(content))
+	//fmt.Printf(string(content))
 	var podInfo PodInfo
 	if err := json.Unmarshal(content, &podInfo); err == nil {
 		return nil,podInfo.Pod_IP
@@ -89,7 +90,7 @@ func GetPodIP(np string, name string,k8swatch string) (error, string) {
 }
 
 // Serialize generates the JSON representation for a given Prometheus metric.
-func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL string) ([][]byte, error) {
+func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL string, nameSpace string) ([][]byte, error) {
 	result := [][]byte{}
 
 	for _, ts := range req.Timeseries {
@@ -107,8 +108,9 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 			metricsContainerName := string(labels["container_name"])
 			//if strings.Contains(metricsName, "container") &&
 			if metricsName == "container_cpu_usage_seconds_total" &&
-				metricsNamespace == "dev" &&
+				metricsNamespace == nameSpace &&
 				metricsContainerName != "POD"{
+
 				//epoch := time.Unix(sample.Timestamp/1000, 0).Unix()
 				metricsService := string(labels["service"])
 				var endpoint string
@@ -131,10 +133,10 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 				}
 
 				reqcpuName := string(labels["container_name"]) + "_req_cpu"
-				fmt.Println(reqcpuName)
+				//fmt.Println(reqcpuName)
 
 				err,reqCPU := GetPodIP(metricsNamespace,reqcpuName,k8swatch)
-				fmt.Printf("pod %s request cpu is : %s\n",reqcpuName,reqCPU)
+				//fmt.Printf("pod %s request cpu is : %s\n",reqcpuName,reqCPU)
 				if err != nil {
 					return nil,err
 				}
@@ -167,6 +169,61 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 				}
 
 				result = append(result, data)
+			}else if metricsName == "container_memory_usage_bytes" &&
+				metricsNamespace == nameSpace &&
+				metricsContainerName != "POD" {
+
+					metricsService := string(labels["service"])
+					var endpoint string
+					if metricsService == "kubelet" {
+						endpoint = string(labels["pod_name"])
+					}else if metricsService == "kube-state-metrics" {
+						endpoint = string(labels["pod"])
+					}
+
+					err,podIP := GetPodIP(metricsNamespace,endpoint,k8swatch)
+					if err != nil {
+						fmt.Println(err)
+						fmt.Println(labels)
+						return nil,err
+					}
+
+				reqmemName := string(labels["container_name"]) + "_req_mem"
+				fmt.Println(reqmemName)
+
+				err,reqMEM := GetPodIP(metricsNamespace,reqmemName,k8swatch)
+				fmt.Printf("pod %s request mem is : %s\n",reqmemName,reqMEM)
+				if err != nil {
+					return nil,err
+				}
+
+				reqMemFlat64,err := strconv.ParseFloat(reqMEM,64)
+				if err != nil {
+					return nil,err
+				}
+
+				memPer := sample.Value / reqMemFlat64
+
+				m := map[string]interface{}{
+					//"timestamp": epoch.Format(time.RFC3339),
+					"timestamp": time.Unix(sample.Timestamp/1000, 0).Unix(),
+					"value": memPer,
+					"metric":      metricsName,
+					"endpoint":	endpoint,
+					"ip": podIP,
+					"tags":    labels,
+					"counterType": "GAUGE",
+					"setp": 30,
+				}
+
+				data, err := s.Marshal(m)
+				if err != nil {
+					logrus.WithError(err).Errorln("couldn't marshal timeseries.")
+				}
+
+				result = append(result, data)
+
+
 			}
 		}
 	}

@@ -19,7 +19,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func processWriteRequest(req *prompb.WriteRequest,k8swatch string,promeURL string) ([][]byte, error) {
+func processWriteRequest(req *prompb.WriteRequest,k8swatch string,promeURL string, nameSpace string) ([][]byte, error) {
 	logrus.WithField("var", req).Debugln()
-	return Serialize(serializer, req, k8swatch, promeURL)
+	return Serialize(serializer, req, k8swatch, promeURL,nameSpace)
 }

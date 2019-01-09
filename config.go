@@ -26,6 +26,7 @@ var (
 	kafkaTopic      = "metrics"
 	k8sWachList = "http://k8s-watch-adapter-svc:8080"
 	promeURL = "http://prometheus-k8s:9090/"
+	nameSpace = "dev"
 	kafkaPartition  = kafka.TopicPartition{
 		Topic:     &kafkaTopic,
 		Partition: kafka.PartitionAny,
@@ -51,6 +52,10 @@ func init() {
 
 	if value := os.Getenv("PROMETHEUS_URL"); value != "" {
 		promeURL = value
+	}
+
+	if value := os.Getenv("NAME_SPACES"); value != "" {
+		nameSpace = value
 	}
 
 
