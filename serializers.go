@@ -78,7 +78,7 @@ func GetPodIP(np string, name string,k8swatch string) (error, string) {
 	if err != nil {
 		fmt.Println("Fatal error ", err.Error())
 	}
-	fmt.Printf(content)
+	fmt.Printf(string(content))
 	var podInfo PodInfo
 	if err := json.Unmarshal(content, &podInfo); err == nil {
 		return nil,podInfo.Pod_IP
