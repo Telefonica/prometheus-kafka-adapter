@@ -154,7 +154,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 					//"timestamp": time.Unix(sample.Timestamp/1000, 0).Unix(),
 					"timestamp": timestamp,
 					//"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
-					"value": cpuPer,
+					"value": cpuPer * 100,
 					"metric":      metricsName,
 					"endpoint":	endpoint,
 					"ip": podIP,
@@ -207,7 +207,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 				m := map[string]interface{}{
 					//"timestamp": epoch.Format(time.RFC3339),
 					"timestamp": time.Unix(sample.Timestamp/1000, 0).Unix(),
-					"value": memPer,
+					"value": memPer * 100,
 					"metric":      metricsName,
 					"endpoint":	endpoint,
 					"ip": podIP,
