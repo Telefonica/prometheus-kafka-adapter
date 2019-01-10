@@ -27,6 +27,7 @@ import (
 	"bytes"
 	"strconv"
 	"time"
+	"math"
 )
 
 // Serializer represents an abstract metrics serializer
@@ -154,7 +155,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 					//"timestamp": time.Unix(sample.Timestamp/1000, 0).Unix(),
 					"timestamp": timestamp,
 					//"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
-					"value": cpuPer * 100,
+					"value": Decimal(cpuPer * 100),
 					"metric":      metricsName,
 					"endpoint":	endpoint,
 					"ip": podIP,
@@ -207,7 +208,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 				m := map[string]interface{}{
 					//"timestamp": epoch.Format(time.RFC3339),
 					"timestamp": time.Unix(sample.Timestamp/1000, 0).Unix(),
-					"value": memPer * 100,
+					"value": Decimal(memPer * 100),
 					"metric":      metricsName,
 					"endpoint":	endpoint,
 					"ip": podIP,
@@ -312,4 +313,8 @@ func NewAvroJSONSerializer(schemaPath string) (*AvroJSONSerializer, error) {
 	return &AvroJSONSerializer{
 		codec: codec,
 	}, nil
+}
+
+func Decimal(value float64) float64 {
+	return math.Trunc(value*1e2+0.5) * 1e-2
 }
