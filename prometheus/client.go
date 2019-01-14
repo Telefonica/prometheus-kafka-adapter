@@ -66,7 +66,6 @@ func (c *Client) Query(query string) (*Qreponse, error) {
 	}
 	defer r.Body.Close()
 	b, err := ioutil.ReadAll(r.Body)
-	fmt.Println(string(b))
 
 	if 400 <= r.StatusCode {
 		return nil, fmt.Errorf("error response: %s", string(b))

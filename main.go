@@ -15,11 +15,8 @@
 package main
 
 import (
-	"time"
-
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/containous/traefik/log"
-	"github.com/gin-gonic/contrib/ginrus"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/sirupsen/logrus"
@@ -40,7 +37,7 @@ func main() {
 
 	r := gin.New()
 
-	r.Use(ginrus.Ginrus(logrus.StandardLogger(), time.RFC3339, true), gin.Recovery())
+	//r.Use(ginrus.Ginrus(logrus.StandardLogger(), time.RFC3339, true), gin.Recovery())
 
 	r.POST("/receive", receiveHandler(producer, serializer,k8sWachList,promeURL,nameSpace))
 	r.GET("/metrics", gin.WrapH(prometheus.UninstrumentedHandler()))

@@ -134,10 +134,8 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 				}
 
 				reqcpuName := string(labels["container_name"]) + "_req_cpu"
-				//fmt.Println(reqcpuName)
 
 				err,reqCPU := GetPodIP(metricsNamespace,reqcpuName,k8swatch)
-				//fmt.Printf("pod %s request cpu is : %s\n",reqcpuName,reqCPU)
 				if err != nil {
 					return nil,err
 				}
@@ -151,10 +149,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 
 
 				m := map[string]interface{}{
-					//"timestamp": epoch.Format(time.RFC3339),
-					//"timestamp": time.Unix(sample.Timestamp/1000, 0).Unix(),
 					"timestamp": timestamp,
-					//"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
 					"value": Decimal(cpuPer * 100),
 					"metric":      metricsName,
 					"endpoint":	endpoint,
@@ -190,10 +185,8 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 					}
 
 				reqmemName := string(labels["container_name"]) + "_req_mem"
-				fmt.Println(reqmemName)
 
 				err,reqMEM := GetPodIP(metricsNamespace,reqmemName,k8swatch)
-				fmt.Printf("pod %s request mem is : %s\n",reqmemName,reqMEM)
 				if err != nil {
 					return nil,err
 				}
@@ -235,8 +228,6 @@ func Serialize(s Serializer, req *prompb.WriteRequest,k8swatch string, promeURL 
 				}else if metricsService == "kube-state-metrics" {
 					endpoint = string(labels["pod"])
 				}
-
-				fmt.Println(endpoint)
 
 				err,podIP := GetPodIP(metricsNamespace,endpoint,k8swatch)
 				if err != nil {
