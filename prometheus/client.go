@@ -126,9 +126,9 @@ func GetPromContainerCpuUsage(pod_name string,prom_url string,sample int64) (tim
 	
 }
 
-func GetPromContainerNetworkUsage(pod_name string,prom_url string,sample int64) (timestamp int64,value float64,err error){
+func GetPromContainerNetworkUsage(pod_name string,prom_url string,sample int64,metrics_name string) (timestamp int64,value float64,err error){
 
-	query_str := "sum by (pod_name) (rate(container_network_receive_bytes_total{job='kubelet', pod_name='" + pod_name + "'}[1m]))"
+	query_str := "sum by (pod_name) (rate(" + metrics_name + "{job='kubelet', pod_name='" + pod_name + "'}[1m]))"
 
 	client,err := NewClient(prom_url)
 	if err != nil {
