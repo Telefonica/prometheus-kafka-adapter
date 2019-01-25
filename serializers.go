@@ -332,7 +332,7 @@ func (s *AvroJSONSerializer) Marshal(metric map[string]interface{}) ([]byte, err
 func NewAvroJSONSerializer(schemaPath string) (*AvroJSONSerializer, error) {
 	schema, err := ioutil.ReadFile(schemaPath)
 	if err != nil {
-		logrus.WithError(err).Errorln("couldn't read avro schema")
+		logrus.WithError(err).Error("couggldn't read avro schema")
 		return nil, err
 	}
 
