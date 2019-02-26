@@ -30,6 +30,8 @@ func main() {
 
 	producer, err := kafka.NewProducer(&kafka.ConfigMap{
 		"bootstrap.servers":   kafkaBrokerList,
+		"compression.codec":   kafkaCompression,
+		"batch.num.messages":  kafkaBatchNumMessages,
 		"go.batch.producer":   true,  // Enable batch producer (for increased performance).
 		"go.delivery.reports": false, // per-message delivery reports to the Events() channel
 	})

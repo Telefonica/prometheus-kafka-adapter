@@ -44,6 +44,8 @@ Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends th
 
 - `KAFKA_BROKER_LIST`: defines kafka endpoint and port, defaults to `kafka:9092`.
 - `KAFKA_TOPIC`: defines kafka topic to be used, defaults to `metrics`.
+- `KAFKA_COMPRESSION`: defines the compression type to be used, defaults to `none`.
+- `KAFKA_BATCH_NUM_MESSAGES`: defines the number of messages to batch write, defaults to `10000`.
 - `SERIALIZATION_FORMAT`: defines the serialization format, can be `json`, `avro-json`, defaults to `json`.
 - `PORT`: defines http port to listen, defaults to `8080`, used directly by [gin](https://github.com/gin-gonic/gin).
 - `LOG_LEVEL`: defines log level for [`logrus`](https://github.com/sirupsen/logrus), can be `debug`, `info`, `warn`, `error`, `fatal` or `panic`, defaults to `info`.
