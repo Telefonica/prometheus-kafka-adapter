@@ -28,6 +28,8 @@ var (
 		Topic:     &kafkaTopic,
 		Partition: kafka.PartitionAny,
 	}
+	kafkaCompression = "none"
+	kafkaBatchNumMessages = "10000"
 	serializer Serializer
 )
 
@@ -50,6 +52,14 @@ func init() {
 			Topic:     &kafkaTopic,
 			Partition: kafka.PartitionAny,
 		}
+	}
+
+	if value := os.Getenv("KAFKA_COMPRESSION"); value != "" {
+	    kafkaCompression = value
+	}
+
+	if value := os.Getenv("KAFKA_BATCH_NUM_MESSAGES"); value != "" {
+	    kafkaBatchNumMessages = value
 	}
 
 	var err error
