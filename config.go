@@ -22,15 +22,18 @@ import (
 )
 
 var (
-	kafkaBrokerList = "kafka:9092"
-	kafkaTopic      = "metrics"
-	kafkaPartition  = kafka.TopicPartition{
+	kafkaBrokerList   = "kafka:9092"
+	kafkaTopic        = "metrics"
+	basicauth         = false
+	basicauthUsername = ""
+	basicauthPassword = ""
+	kafkaPartition    = kafka.TopicPartition{
 		Topic:     &kafkaTopic,
 		Partition: kafka.PartitionAny,
 	}
-	kafkaCompression = "none"
+	kafkaCompression      = "none"
 	kafkaBatchNumMessages = "10000"
-	serializer Serializer
+	serializer            Serializer
 )
 
 func init() {
@@ -54,12 +57,21 @@ func init() {
 		}
 	}
 
+	if value := os.Getenv("BASIC_AUTH_USERNAME"); value != "" {
+		basicauth = true
+		basicauthUsername = value
+	}
+
+	if value := os.Getenv("BASIC_AUTH_PASSWORD"); value != "" {
+		basicauthPassword = value
+	}
+
 	if value := os.Getenv("KAFKA_COMPRESSION"); value != "" {
-	    kafkaCompression = value
+		kafkaCompression = value
 	}
 
 	if value := os.Getenv("KAFKA_BATCH_NUM_MESSAGES"); value != "" {
-	    kafkaBatchNumMessages = value
+		kafkaBatchNumMessages = value
 	}
 
 	var err error
