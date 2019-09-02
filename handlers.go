@@ -30,6 +30,7 @@ import (
 
 func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin.Context) {
 	return func(c *gin.Context) {
+
 		httpRequestsTotal.Add(float64(1))
 
 		compressed, err := ioutil.ReadAll(c.Request.Body)

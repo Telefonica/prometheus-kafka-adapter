@@ -44,8 +44,16 @@ func main() {
 
 	r.Use(ginrus.Ginrus(logrus.StandardLogger(), time.RFC3339, true), gin.Recovery())
 
-	r.POST("/receive", receiveHandler(producer, serializer))
 	r.GET("/metrics", gin.WrapH(prometheus.UninstrumentedHandler()))
+
+	if basicauth {
+		authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
+			basicauthUsername: basicauthPassword,
+		}))
+		authorized.POST("/receive", receiveHandler(producer, serializer))
+	} else {
+		r.POST("/receive", receiveHandler(producer, serializer))
+	}
 
 	r.Run()
 }
