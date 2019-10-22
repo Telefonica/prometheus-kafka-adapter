@@ -31,9 +31,14 @@ var (
 		Topic:     &kafkaTopic,
 		Partition: kafka.PartitionAny,
 	}
-	kafkaCompression      = "none"
-	kafkaBatchNumMessages = "10000"
-	serializer            Serializer
+	kafkaCompression       = "none"
+	kafkaBatchNumMessages  = "10000"
+	kafkaSslClientCertFile = ""
+	kafkaSslClientKeyFile  = ""
+	kafkaSslClientKeyPass  = ""
+	kafkaSslCACertFile     = ""
+	kafkaSslValidation     = true
+	serializer             Serializer
 )
 
 func init() {
@@ -72,6 +77,22 @@ func init() {
 
 	if value := os.Getenv("KAFKA_BATCH_NUM_MESSAGES"); value != "" {
 		kafkaBatchNumMessages = value
+	}
+
+	if value := os.Getenv("KAFKA_SSL_CLIENT_CERT_FILE"); value != "" {
+		kafkaSslClientCertFile = value
+	}
+
+	if value := os.Getenv("KAFKA_SSL_CLIENT_KEY_FILE"); value != "" {
+		kafkaSslClientKeyFile = value
+	}
+
+	if value := os.Getenv("KAFKA_SSL_CLIENT_KEY_PASS"); value != "" {
+		kafkaSslClientKeyPass = value
+	}
+
+	if value := os.Getenv("KAFKA_SSL_CA_CERT_FILE"); value != "" {
+		kafkaSslCACertFile = value
 	}
 
 	var err error

@@ -1,4 +1,4 @@
-FROM golang:1.11-alpine as build
+FROM golang:1.13.3-alpine3.10 as build
 
 RUN apk add --no-cache alpine-sdk librdkafka librdkafka-dev
 
@@ -7,7 +7,7 @@ ADD . /src/prometheus-kafka-adapter
 
 RUN go build -o /prometheus-kafka-adapter
 
-FROM alpine:3.8
+FROM alpine:3.10
 
 RUN apk add --no-cache librdkafka
 
