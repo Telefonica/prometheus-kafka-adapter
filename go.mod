@@ -5,7 +5,7 @@ require (
 	github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973 // indirect
 	github.com/confluentinc/confluent-kafka-go v1.0.0
 	github.com/containous/traefik v1.7.1
-	github.com/edenhill/librdkafka v1.0.1-RC1
+	github.com/edenhill/librdkafka v1.0.1
 	github.com/fatih/structs v1.1.0
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
 	github.com/gin-gonic/contrib v0.0.0-20180614032058-39cfb9727134

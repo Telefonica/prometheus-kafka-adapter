@@ -25,7 +25,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-
 func main() {
 	log.Info("creating kafka producer")
 
