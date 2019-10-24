@@ -53,6 +53,13 @@ Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends th
 - `LOG_LEVEL`: defines log level for [`logrus`](https://github.com/sirupsen/logrus), can be `debug`, `info`, `warn`, `error`, `fatal` or `panic`, defaults to `info`.
 - `GIN_MODE`: manage [gin](https://github.com/gin-gonic/gin) debug logging, can be `debug` or `release`.
 
+To connect to Kafka over SSL define the following additonal environment variables:
+
+- `KAFKA_TLS_CLIENT_CERT_FILE`: Kafka SSL client certificate file, defaults to `""`
+- `KAFKA_TLS_CLIENT_KEY_FILE`: Kafka SSL client certificate key file, defaults to `""`
+- `KAFKA_TLS_CLIENT_KEY_PASS`: Kafka SSL client certificate key password (optional), defaults to `""`
+- `KAFKA_TLS_CA_CERT_FILE`: Kafka SSL broker CA certificate file, defaults to `""`
+
 ### prometheus
 
 Prometheus needs to have a `remote_write` url configured, pointing to the '/receive' endpoint of the host and port where the prometheus-kafka-adapter service is running. For example:
