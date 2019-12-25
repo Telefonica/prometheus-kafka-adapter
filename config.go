@@ -45,7 +45,7 @@ func init() {
 	logrus.SetFormatter(&logrus.JSONFormatter{})
 	logrus.SetOutput(os.Stdout)
 
-	if value := os.Getenv("LOG_LEVEL"); value == "" {
+	if value := os.Getenv("LOG_LEVEL"); value != "" {
 		logrus.SetLevel(parseLogLevel(value))
 	}
 
