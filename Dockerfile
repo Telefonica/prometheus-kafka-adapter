@@ -1,4 +1,4 @@
-FROM golang:1.13.3-alpine3.10 as build
+FROM golang:1.13.6-alpine3.10 as build
 
 RUN apk add --no-cache alpine-sdk librdkafka librdkafka-dev
 
