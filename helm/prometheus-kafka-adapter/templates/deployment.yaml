@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "prometheus-kafka-adapter.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "prometheus-kafka-adapter.labels" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "prometheus-kafka-adapter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "prometheus-kafka-adapter.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+{{- with .Values.pod.annotations }}
+      annotations:
+{{ toYaml . | trimSuffix "\n" | indent 8 }}
+{{- end }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ template "prometheus-kafka-adapter.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: KAFKA_BROKER_LIST
+            value: {{ tpl .Values.environment.KAFKA_BROKER_LIST . }} # may want customizable service references
+          - name: KAFKA_TOPIC
+            value: {{ tpl .Values.environment.KAFKA_TOPIC . }}
+          - name: KAFKA_COMPRESSION
+            value: {{ .Values.environment.KAFKA_COMPRESSION | quote }}
+          - name: KAFKA_BATCH_NUM_MESSAGES
+            value: {{ .Values.environment.KAFKA_BATCH_NUM_MESSAGES | quote }}
+          - name: SERIALIZATION_FORMAT
+            value: {{ .Values.environment.SERIALIZATION_FORMAT | quote }}
+          - name: PORT
+            value: {{ .Values.environment.PORT | quote }}
+          {{- if .Values.environment.BASIC_AUTH_USERNAME }}
+          - name: BASIC_AUTH_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "prometheus-kafka-adapter.fullname" . }}
+                key: BASIC_AUTH_USERNAME
+          {{- end }}{{- if .Values.environment.BASIC_AUTH_PASSWORD }}
+          - name: BASIC_AUTH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "prometheus-kafka-adapter.fullname" . }}
+                key: BASIC_AUTH_PASSWORD
+          {{- end }}
+          - name: LOG_LEVEL
+            value: {{ .Values.environment.LOG_LEVEL | quote }}
+          - name: GIN_MODE
+            value: {{ .Values.environment.GIN_MODE | quote }}
+          - name: KAFKA_TLS_CLIENT_CERT_FILE
+            value: {{ .Values.environment.KAFKA_TLS_CLIENT_CERT_FILE | quote }}
+          - name: KAFKA_TLS_CLIENT_KEY_FILE
+            value: {{ .Values.environment.KAFKA_TLS_CLIENT_KEY_FILE | quote }}
+          {{- if .Values.environment.KAFKA_TLS_CLIENT_KEY_PASS }}
+          - name: KAFKA_TLS_CLIENT_KEY_PASS
+            valueFrom:
+              secretKeyRef:
+                name: {{ include "prometheus-kafka-adapter.fullname" . }}
+                key: KAFKA_TLS_CLIENT_KEY_PASS
+          {{- end }}
+          - name: KAFKA_TLS_CA_CERT_FILE
+            value: {{ .Values.environment.KAFKA_TLS_CA_CERT_FILE | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.environment.PORT }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

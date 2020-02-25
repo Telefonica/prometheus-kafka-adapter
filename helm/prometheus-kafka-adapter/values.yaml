@@ -1,0 +1,91 @@
+# Default values for prometheus-kafka-adapter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: telefonica/prometheus-kafka-adapter
+  tag: 1.4.1
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+pod:
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8080"
+
+
+environment:
+  # defines kafka endpoint and port, defaults to kafka:9092.
+  KAFKA_BROKER_LIST: ""
+  # defines kafka topic to be used, defaults to metrics.
+  KAFKA_TOPIC: ""
+  # defines the compression type to be used, defaults to none.
+  KAFKA_COMPRESSION:
+  # defines the number of messages to batch write, defaults to 10000.
+  KAFKA_BATCH_NUM_MESSAGES:
+  # defines the serialization format, can be json, avro-json, defaults to json.
+  SERIALIZATION_FORMAT:
+  # defines http port to listen, defaults to 8080, used directly by gin.
+  PORT: 8080
+  # basic auth username to be used for receive endpoint, defaults is no basic auth.
+  BASIC_AUTH_USERNAME:
+  # basic auth password to be used for receive endpoint, default is no basic auth.
+  BASIC_AUTH_PASSWORD:
+  # defines log level for logrus, can be debug, info, warn, error, fatal or panic, defaults to info.
+  LOG_LEVEL:
+  # manage gin debug logging, can be debug or release, defaults to debug
+  GIN_MODE:
+  # Kafka SSL client certificate file, defaults to ""
+  KAFKA_TLS_CLIENT_CERT_FILE:
+  # Kafka SSL client certificate key file, defaults to ""
+  KAFKA_TLS_CLIENT_KEY_FILE:
+  # Kafka SSL client certificate key password (optional), defaults to ""
+  KAFKA_TLS_CLIENT_KEY_PASS:
+  # Kafka SSL broker CA certificate file, defaults to ""
+  KAFKA_TLS_CA_CERT_FILE:
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  annotations: {}
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
