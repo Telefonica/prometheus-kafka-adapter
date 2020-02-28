@@ -55,10 +55,10 @@ Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends th
 
 To connect to Kafka over SSL define the following additonal environment variables:
 
-- `KAFKA_TLS_CLIENT_CERT_FILE`: Kafka SSL client certificate file, defaults to `""`
-- `KAFKA_TLS_CLIENT_KEY_FILE`: Kafka SSL client certificate key file, defaults to `""`
-- `KAFKA_TLS_CLIENT_KEY_PASS`: Kafka SSL client certificate key password (optional), defaults to `""`
-- `KAFKA_TLS_CA_CERT_FILE`: Kafka SSL broker CA certificate file, defaults to `""`
+- `KAFKA_SSL_CLIENT_CERT_FILE`: Kafka SSL client certificate file, defaults to `""`
+- `KAFKA_SSL_CLIENT_KEY_FILE`: Kafka SSL client certificate key file, defaults to `""`
+- `KAFKA_SSL_CLIENT_KEY_PASS`: Kafka SSL client certificate key password (optional), defaults to `""`
+- `KAFKA_SSL_CA_CERT_FILE`: Kafka SSL broker CA certificate file, defaults to `""`
 
 ### prometheus
 
