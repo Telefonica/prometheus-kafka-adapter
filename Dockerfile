@@ -1,6 +1,8 @@
 FROM golang:1.13.6-alpine3.10 as build
 
-RUN apk add --no-cache alpine-sdk librdkafka librdkafka-dev
+RUN echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories
+RUN echo "@edgecommunity http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories  
+RUN apk add --no-cache alpine-sdk 'librdkafka@edgecommunity>=1.3.0' 'librdkafka-dev@edgecommunity>=1.3.0'
 
 WORKDIR /src/prometheus-kafka-adapter
 ADD . /src/prometheus-kafka-adapter
