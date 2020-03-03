@@ -11,7 +11,9 @@ RUN go build -o /prometheus-kafka-adapter
 
 FROM alpine:3.11
 
-RUN apk add --no-cache librdkafka
+RUN echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
+    echo "@edgecommunity http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
+    apk add --no-cache 'librdkafka@edgecommunity>=1.3.0'
 
 COPY --from=build /src/prometheus-kafka-adapter/schemas/metric.avsc /schemas/metric.avsc
 COPY --from=build /prometheus-kafka-adapter /

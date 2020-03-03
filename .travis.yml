@@ -10,6 +10,12 @@ services:
 install:
   - docker build -t telefonica/prometheus-kafka-adapter .
 
+test:
+  - docker build -t telefonica/prometheus-kafka-adapter .
+  - docker run -d --name test telefonica/prometheus-kafka-adapter
+  - if [ $(docker inspect -f {{.State.Status}} test) = "running" ]; then echo "OK"; exit 0; else echo
+    "FAILED"; exit 1; fi
+
 git:
   depth: 1
   quiet: true
