@@ -38,7 +38,7 @@ The Avro-JSON serialization is the same. See the [Avro schema](./schemas/metric.
 
 ### prometheus-kafka-adapter
 
-There is a docker image `telefonica/prometheus-kafka-adapter:1.5.0` [available on Docker Hub](https://hub.docker.com/r/telefonica/prometheus-kafka-adapter/).
+There is a docker image `telefonica/prometheus-kafka-adapter:1.5.1` [available on Docker Hub](https://hub.docker.com/r/telefonica/prometheus-kafka-adapter/).
 
 Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends them to Kafka. This behaviour can be configured with the following environment variables:
 
