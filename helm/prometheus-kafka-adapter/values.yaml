@@ -18,6 +18,12 @@ pod:
     prometheus.io/scrape: "true"
     prometheus.io/port: "8080"
 
+# Cert and Key values, each is mounted as a separate Secret volume, so the
+# default file paths and any overrides set with the *_FILE options must be in
+# unique directory subpaths
+KAFKA_SSL_CLIENT_CERT:
+KAFKA_SSL_CLIENT_KEY:
+KAFKA_SSL_CA_CERT:
 
 environment:
   # defines kafka endpoint and port, defaults to kafka:9092.
@@ -40,14 +46,17 @@ environment:
   LOG_LEVEL:
   # manage gin debug logging, can be debug or release, defaults to debug
   GIN_MODE:
-  # Kafka SSL client certificate file, defaults to ""
-  KAFKA_TLS_CLIENT_CERT_FILE:
-  # Kafka SSL client certificate key file, defaults to ""
-  KAFKA_TLS_CLIENT_KEY_FILE:
+  # Kafka SSL client certificate file, defaults to "/client_cert/ssl_client_cert.pem" if
+  # KAFKA_SSL_CLIENT_CERT is provided, "" otherwise
+  KAFKA_SSL_CLIENT_CERT_FILE:
+  # Kafka SSL client certificate key file, defaults to "/client_key/ssl_client_key.pem" if
+  # KAFKA_SSL_CLIENT_KEY is provided, "" otherwise
+  KAFKA_SSL_CLIENT_KEY_FILE:
   # Kafka SSL client certificate key password (optional), defaults to ""
-  KAFKA_TLS_CLIENT_KEY_PASS:
-  # Kafka SSL broker CA certificate file, defaults to ""
-  KAFKA_TLS_CA_CERT_FILE:
+  KAFKA_SSL_CLIENT_KEY_PASS:
+  # Kafka SSL broker CA certificate file, defaults to "/ca_cert/ssl_ca_cert.pem" if
+  # KAFKA_SSL_CA_CERT is provided, "" otherwise
+  KAFKA_SSL_CA_CERT_FILE:
 
 serviceAccount:
   # Specifies whether a service account should be created

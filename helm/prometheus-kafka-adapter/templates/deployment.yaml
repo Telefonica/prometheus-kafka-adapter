@@ -64,19 +64,25 @@ spec:
             value: {{ .Values.environment.LOG_LEVEL | quote }}
           - name: GIN_MODE
             value: {{ .Values.environment.GIN_MODE | quote }}
-          - name: KAFKA_TLS_CLIENT_CERT_FILE
-            value: {{ .Values.environment.KAFKA_TLS_CLIENT_CERT_FILE | quote }}
-          - name: KAFKA_TLS_CLIENT_KEY_FILE
-            value: {{ .Values.environment.KAFKA_TLS_CLIENT_KEY_FILE | quote }}
-          {{- if .Values.environment.KAFKA_TLS_CLIENT_KEY_PASS }}
-          - name: KAFKA_TLS_CLIENT_KEY_PASS
+            {{- if or .Values.environment.KAFKA_SSL_CLIENT_CERT_FILE .Values.KAFKA_SSL_CLIENT_CERT }}
+          - name: KAFKA_SSL_CLIENT_CERT_FILE
+            value: {{ .Values.environment.KAFKA_SSL_CLIENT_CERT_FILE | quote | default "/client_cert/ssl_client_cert.pem" }}
+            {{- end }}
+            {{- if or .Values.environment.KAFKA_SSL_CLIENT_KEY_FILE .Values.KAFKA_SSL_CLIENT_KEY }}
+          - name: KAFKA_SSL_CLIENT_KEY_FILE
+            value: {{ .Values.environment.KAFKA_SSL_CLIENT_KEY_FILE | quote | default "/client_key/ssl_client_key.pem"}}
+            {{- end }}
+            {{- if or .Values.environment.KAFKA_SSL_CA_CERT_FILE .Values.KAFKA_SSL_CA_CERT }}
+          - name: KAFKA_SSL_CA_CERT_FILE
+            value: {{ .Values.environment.KAFKA_SSL_CA_CERT_FILE | quote | default "/ca_cert/ssl_ca_cert.pem" }}
+            {{- end }}
+          {{- if .Values.environment.KAFKA_SSL_CLIENT_KEY_PASS }}
+          - name: KAFKA_SSL_CLIENT_KEY_PASS
             valueFrom:
               secretKeyRef:
                 name: {{ include "prometheus-kafka-adapter.fullname" . }}
-                key: KAFKA_TLS_CLIENT_KEY_PASS
+                key: KAFKA_SSL_CLIENT_KEY_PASS
           {{- end }}
-          - name: KAFKA_TLS_CA_CERT_FILE
-            value: {{ .Values.environment.KAFKA_TLS_CA_CERT_FILE | quote }}
           ports:
             - name: http
               containerPort: {{ .Values.environment.PORT }}
@@ -91,6 +97,38 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          {{- if .Values.KAFKA_SSL_CLIENT_CERT }}
+          - name: ssl-client-cert
+            mountPath: {{ .Values.environment.KAFKA_SSL_CLIENT_CERT_FILE | default "/client_cert/" | dir }}
+            readOnly: true
+          {{- end }}
+          {{- if .Values.KAFKA_SSL_CLIENT_KEY }}
+          - name: ssl-client-key
+            mountPath: {{ .Values.environment.KAFKA_SSL_CLIENT_KEY_FILE | default "/client_key/" | dir }}
+            readOnly: true
+          {{- end }}
+          {{- if .Values.KAFKA_SSL_CA_CERT }}
+          - name: ssl-ca-cert
+            mountPath: {{ .Values.environment.KAFKA_SSL_CA_CERT_FILE | default "/ca_cert/" | dir }}
+            readOnly: true
+          {{- end }}
+      volumes:
+      {{- if .Values.KAFKA_SSL_CLIENT_CERT }}
+      - name: ssl-client-cert
+        secret:
+          secretName: {{ include "prometheus-kafka-adapter.fullname" . }}-ssl-client-cert
+      {{- end }}
+      {{- if .Values.KAFKA_SSL_CLIENT_KEY }}
+      - name: ssl-client-key
+        secret:
+          secretName: {{ include "prometheus-kafka-adapter.fullname" . }}-ssl-client-key
+      {{- end }}
+      {{- if .Values.KAFKA_SSL_CA_CERT }}
+      - name: ssl-ca-cert
+        secret:
+          secretName: {{ include "prometheus-kafka-adapter.fullname" . }}-ssl-ca-cert
+      {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
