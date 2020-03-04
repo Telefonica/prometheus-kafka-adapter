@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ default (include "prometheus-kafka-adapter.fullname" . ) .Values.service.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "prometheus-kafka-adapter.labels" . | indent 4 }}
+{{- with .Values.service.annotations }}
+  annotations:
+{{ toYaml . | trimSuffix "\n" | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "prometheus-kafka-adapter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
