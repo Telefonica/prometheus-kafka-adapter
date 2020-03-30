@@ -34,14 +34,15 @@ func main() {
 		"batch.num.messages":       kafkaBatchNumMessages,
 		"go.batch.producer":        true,                   // Enable batch producer (for increased performance).
 		"go.delivery.reports":      false,                  // per-message delivery reports to the Events() channel
-		"ssl.ca.location":          kafkaSslCACertFile,     // CA certificate file for verifying the broker's certificate.
-		"ssl.certificate.location": kafkaSslClientCertFile, // Client's certificate
-		"ssl.key.location":         kafkaSslClientKeyFile,  // Client's key
-		"ssl.key.password":         kafkaSslClientKeyPass,  // Key password, if any.
 	}
 
 	if kafkaSslClientCertFile != "" && kafkaSslClientKeyFile != "" && kafkaSslCACertFile != "" {
-		kafkaConfig["security.protocol"] = "ssl"
+		kafkaSslValidation =                            true
+		kafkaConfig["security.protocol"] =              "ssl"
+		kafkaConfig["ssl.ca.location"] =                kafkaSslCACertFile      // CA certificate file for verifying the broker's certificate.
+		kafkaConfig["ssl.certificate.location"] =       kafkaSslClientCertFile  // Client's certificate
+		kafkaConfig["ssl.key.location"] =               kafkaSslClientKeyFile   // Client's key
+		kafkaConfig["ssl.key.password"] =               kafkaSslClientKeyPass   // Key password, if any.
 	}
 
 	producer, err := kafka.NewProducer(&kafkaConfig)

@@ -60,6 +60,10 @@ To connect to Kafka over SSL define the following additonal environment variable
 - `KAFKA_SSL_CLIENT_KEY_PASS`: Kafka SSL client certificate key password (optional), defaults to `""`
 - `KAFKA_SSL_CA_CERT_FILE`: Kafka SSL broker CA certificate file, defaults to `""`
 
+When deployed in a K8s Cluster using Helm and using a Kafka external to the cluster, it might be necessary to define the kafka hostname resolution locally (this fills the /etc/hosts of the container).
+
+Use a custom values.yaml file with section 'hostAliases' (as mentioned in default values.yaml).
+
 ### prometheus
 
 Prometheus needs to have a `remote_write` url configured, pointing to the '/receive' endpoint of the host and port where the prometheus-kafka-adapter service is running. For example:
@@ -68,6 +72,10 @@ Prometheus needs to have a `remote_write` url configured, pointing to the '/rece
 remote_write:
   - url: "http://prometheus-kafka-adapter:8080/receive"
 ```
+
+When deployed in a K8s Cluster using Helm and using an external Prometheus, it might be necessary to expose prometheus-kafka-adapter input port as a node port.
+
+Use a custom values.yaml file to set service.type: NodePort and service.nodeport:<PortNumber> (see comments in default values.yaml)
 
 ## development
 
