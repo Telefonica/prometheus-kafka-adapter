@@ -37,7 +37,7 @@ var (
 	kafkaSslClientKeyFile  = ""
 	kafkaSslClientKeyPass  = ""
 	kafkaSslCACertFile     = ""
-	kafkaSslValidation     = true
+	kafkaSslValidation     = false
 	serializer             Serializer
 )
 

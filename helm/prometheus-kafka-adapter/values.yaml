@@ -25,6 +25,12 @@ KAFKA_SSL_CLIENT_CERT:
 KAFKA_SSL_CLIENT_KEY:
 KAFKA_SSL_CA_CERT:
 
+# When deployed in a K8s cluster and using an external Kafka it might be necessary to define the kafka host here (fill the /etc/hosts of the container)
+# hostAliases:
+#  - ip: ""
+#    hostnames:
+#    - ""
+
 environment:
   # defines kafka endpoint and port, defaults to kafka:9092.
   KAFKA_BROKER_LIST: ""
@@ -77,6 +83,9 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
+  # To define a NodePort, overload in a custom values file
+  #   type: NodePort
+  #   nodeport: <value>
   type: ClusterIP
   port: 80
   annotations: {}
