@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: telefonica/prometheus-kafka-adapter
-  tag: 1.4.1
+  tag: 1.6.0
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []

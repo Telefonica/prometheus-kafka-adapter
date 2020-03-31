@@ -29,20 +29,20 @@ func main() {
 	log.Info("creating kafka producer")
 
 	kafkaConfig := kafka.ConfigMap{
-		"bootstrap.servers":        kafkaBrokerList,
-		"compression.codec":        kafkaCompression,
-		"batch.num.messages":       kafkaBatchNumMessages,
-		"go.batch.producer":        true,                   // Enable batch producer (for increased performance).
-		"go.delivery.reports":      false,                  // per-message delivery reports to the Events() channel
+		"bootstrap.servers":   kafkaBrokerList,
+		"compression.codec":   kafkaCompression,
+		"batch.num.messages":  kafkaBatchNumMessages,
+		"go.batch.producer":   true,  // Enable batch producer (for increased performance).
+		"go.delivery.reports": false, // per-message delivery reports to the Events() channel
 	}
 
 	if kafkaSslClientCertFile != "" && kafkaSslClientKeyFile != "" && kafkaSslCACertFile != "" {
-		kafkaSslValidation =                            true
-		kafkaConfig["security.protocol"] =              "ssl"
-		kafkaConfig["ssl.ca.location"] =                kafkaSslCACertFile      // CA certificate file for verifying the broker's certificate.
-		kafkaConfig["ssl.certificate.location"] =       kafkaSslClientCertFile  // Client's certificate
-		kafkaConfig["ssl.key.location"] =               kafkaSslClientKeyFile   // Client's key
-		kafkaConfig["ssl.key.password"] =               kafkaSslClientKeyPass   // Key password, if any.
+		kafkaSslValidation = true
+		kafkaConfig["security.protocol"] = "ssl"
+		kafkaConfig["ssl.ca.location"] = kafkaSslCACertFile              // CA certificate file for verifying the broker's certificate.
+		kafkaConfig["ssl.certificate.location"] = kafkaSslClientCertFile // Client's certificate
+		kafkaConfig["ssl.key.location"] = kafkaSslClientKeyFile          // Client's key
+		kafkaConfig["ssl.key.password"] = kafkaSslClientKeyPass          // Key password, if any.
 	}
 
 	producer, err := kafka.NewProducer(&kafkaConfig)

@@ -38,7 +38,7 @@ The Avro-JSON serialization is the same. See the [Avro schema](./schemas/metric.
 
 ### prometheus-kafka-adapter
 
-There is a docker image `telefonica/prometheus-kafka-adapter:1.5.1` [available on Docker Hub](https://hub.docker.com/r/telefonica/prometheus-kafka-adapter/).
+There is a docker image `telefonica/prometheus-kafka-adapter:1.6.0` [available on Docker Hub](https://hub.docker.com/r/telefonica/prometheus-kafka-adapter/).
 
 Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends them to Kafka. This behaviour can be configured with the following environment variables:
 
@@ -60,9 +60,7 @@ To connect to Kafka over SSL define the following additonal environment variable
 - `KAFKA_SSL_CLIENT_KEY_PASS`: Kafka SSL client certificate key password (optional), defaults to `""`
 - `KAFKA_SSL_CA_CERT_FILE`: Kafka SSL broker CA certificate file, defaults to `""`
 
-When deployed in a K8s Cluster using Helm and using a Kafka external to the cluster, it might be necessary to define the kafka hostname resolution locally (this fills the /etc/hosts of the container).
-
-Use a custom values.yaml file with section 'hostAliases' (as mentioned in default values.yaml).
+When deployed in a Kubernetes cluster using Helm and using a Kafka external to the cluster, it might be necessary to define the kafka hostname resolution locally (this fills the /etc/hosts of the container). Use a custom values.yaml file with section `hostAliases` (as mentioned in default values.yaml).
 
 ### prometheus
 
@@ -73,9 +71,7 @@ remote_write:
   - url: "http://prometheus-kafka-adapter:8080/receive"
 ```
 
-When deployed in a K8s Cluster using Helm and using an external Prometheus, it might be necessary to expose prometheus-kafka-adapter input port as a node port.
-
-Use a custom values.yaml file to set service.type: NodePort and service.nodeport:<PortNumber> (see comments in default values.yaml)
+When deployed in a Kubernetes cluster using Helm and using an external Prometheus, it might be necessary to expose prometheus-kafka-adapter input port as a node port. Use a custom values.yaml file to set `service.type: NodePort` and `service.nodeport: <PortNumber>` (see comments in default values.yaml)
 
 ## development
 
