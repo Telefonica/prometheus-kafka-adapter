@@ -4,10 +4,6 @@
 
 Prometheus-kafka-adapter is a service which receives [Prometheus](https://github.com/prometheus) metrics through [`remote_write`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write), marshal into JSON and sends them into [Kafka](https://github.com/apache/kafka).
 
-## motivation
-
-We use `prometheus-kafka-adapter` internally at Telefonica for dumping Prometheus metrics into an object storage in diferent clouds, through [Kafka](https://github.com/apache/kafka) and Kafka-Connect.
-
 ## output
 
 It is able to write JSON or Avro-JSON messages in a kafka topic, depending on the `SERIALIZATION_FORMAT` configuration variable.
@@ -84,14 +80,14 @@ go build
 
 With issues:
   - Use the search tool before opening a new issue.
-  - Please provide source code and commit sha if you found a bug.
+  - Please provide source code and commit sha if you find a bug.
   - Review existing issues and provide feedback or react to them.
 
 With pull requests:
   - Open your pull request against `master`
-  - It should pass all tests in the continuous integrations system (TravisCI).
+  - It should pass all tests in the continuous integration pipeline (TravisCI).
   - You should add/modify tests to cover your proposed code changes.
-  - If your pull request contains a new feature, please document it on the README.
+  - If your pull request contains a new feature, please document it in this README.
 
 
 ## license
