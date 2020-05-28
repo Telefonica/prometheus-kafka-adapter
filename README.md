@@ -39,7 +39,7 @@ There is a docker image `telefonica/prometheus-kafka-adapter:1.6.0` [available o
 Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends them to Kafka. This behaviour can be configured with the following environment variables:
 
 - `KAFKA_BROKER_LIST`: defines kafka endpoint and port, defaults to `kafka:9092`.
-- `KAFKA_TOPIC`: defines kafka topic to be used, defaults to `metrics`.
+- `KAFKA_TOPIC`: defines kafka topic to be used, defaults to `metrics`. Could use go template, labels are passed (as a map) to the template: e.g: `metrics.{{ index . "__name__" }}` to use per-metric topic. Two template functions are available: replace (`{{ index . "__name__" | replace "message" "msg" }}`) and substring (`{{ index . "__name__" | substring 0 5 }}`)
 - `KAFKA_COMPRESSION`: defines the compression type to be used, defaults to `none`.
 - `KAFKA_BATCH_NUM_MESSAGES`: defines the number of messages to batch write, defaults to `10000`.
 - `SERIALIZATION_FORMAT`: defines the serialization format, can be `json`, `avro-json`, defaults to `json`.
