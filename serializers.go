@@ -15,6 +15,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"strconv"
@@ -33,8 +34,8 @@ type Serializer interface {
 }
 
 // Serialize generates the JSON representation for a given Prometheus metric.
-func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
-	result := [][]byte{}
+func Serialize(s Serializer, req *prompb.WriteRequest) (map[string][][]byte, error) {
+	result := make(map[string][][]byte)
 
 	for _, ts := range req.Timeseries {
 		labels := make(map[string]string, len(ts.Labels))
@@ -42,6 +43,8 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 		for _, l := range ts.Labels {
 			labels[string(model.LabelName(l.Name))] = string(model.LabelValue(l.Value))
 		}
+
+		t := topic(labels)
 
 		for _, sample := range ts.Samples {
 			epoch := time.Unix(sample.Timestamp/1000, 0).UTC()
@@ -58,7 +61,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) ([][]byte, error) {
 				logrus.WithError(err).Errorln("couldn't marshal timeseries")
 			}
 
-			result = append(result, data)
+			result[t] = append(result[t], data)
 		}
 	}
 
@@ -103,4 +106,12 @@ func NewAvroJSONSerializer(schemaPath string) (*AvroJSONSerializer, error) {
 	return &AvroJSONSerializer{
 		codec: codec,
 	}, nil
+}
+
+func topic(labels map[string]string) string {
+	var buf bytes.Buffer
+	if err := topicTemplate.Execute(&buf, labels); err != nil {
+		return ""
+	}
+	return buf.String()
 }

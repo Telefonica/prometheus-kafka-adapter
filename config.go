@@ -16,21 +16,19 @@ package main
 
 import (
 	"os"
+	"strings"
+	"text/template"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/sirupsen/logrus"
 )
 
 var (
-	kafkaBrokerList   = "kafka:9092"
-	kafkaTopic        = "metrics"
-	basicauth         = false
-	basicauthUsername = ""
-	basicauthPassword = ""
-	kafkaPartition    = kafka.TopicPartition{
-		Topic:     &kafkaTopic,
-		Partition: kafka.PartitionAny,
-	}
+	kafkaBrokerList        = "kafka:9092"
+	kafkaTopic             = "metrics"
+	topicTemplate          *template.Template
+	basicauth              = false
+	basicauthUsername      = ""
+	basicauthPassword      = ""
 	kafkaCompression       = "none"
 	kafkaBatchNumMessages  = "10000"
 	kafkaSslClientCertFile = ""
@@ -55,11 +53,6 @@ func init() {
 
 	if value := os.Getenv("KAFKA_TOPIC"); value != "" {
 		kafkaTopic = value
-
-		kafkaPartition = kafka.TopicPartition{
-			Topic:     &kafkaTopic,
-			Partition: kafka.PartitionAny,
-		}
 	}
 
 	if value := os.Getenv("BASIC_AUTH_USERNAME"); value != "" {
@@ -100,6 +93,11 @@ func init() {
 	if err != nil {
 		logrus.WithError(err).Fatalln("couldn't create a metrics serializer")
 	}
+
+	topicTemplate, err = parseTopicTemplate(kafkaTopic)
+	if err != nil {
+		logrus.WithError(err).Fatalln("couldn't parse the topic template")
+	}
 }
 
 func parseLogLevel(value string) logrus.Level {
@@ -123,4 +121,25 @@ func parseSerializationFormat(value string) (Serializer, error) {
 		logrus.WithField("serialization-format-value", value).Warningln("invalid serialization format, using json")
 		return NewJSONSerializer()
 	}
+}
+
+func parseTopicTemplate(tpl string) (*template.Template, error) {
+	funcMap := template.FuncMap{
+		"replace": func(old, new, src string) string {
+			return strings.Replace(src, old, new, -1)
+		},
+		"substring": func(start, end int, s string) string {
+			if start < 0 {
+				start = 0
+			}
+			if end < 0 || end > len(s) {
+				end = len(s)
+			}
+			if start >= end {
+				panic("template function - substring: start is bigger (or equal) than end. That will produce an empty string.")
+			}
+			return s[start:end]
+		},
+	}
+	return template.New("topic").Funcs(funcMap).Parse(tpl)
 }
