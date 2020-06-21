@@ -45,6 +45,22 @@ func main() {
 		kafkaConfig["ssl.key.password"] = kafkaSslClientKeyPass          // Key password, if any.
 	}
 
+	if kafkaSaslMechanism != "" && kafkaSaslUsername != "" && kafkaSaslPassword != "" {
+		if kafkaSecurityProtocol != "" {
+			kafkaConfig["security.protocol"] = kafkaSecurityProtocol
+		} else {
+			if v, _ := kafkaConfig.Get("security.protocol", nil); v == nil {
+				kafkaConfig["security.protocol"] = "sasl_plaintext"
+			} else {
+				kafkaConfig["security.protocol"] = "sasl_ssl"
+			}
+		}
+
+		kafkaConfig["sasl.mechanism"] = kafkaSaslMechanism
+		kafkaConfig["sasl.username"] = kafkaSaslUsername
+		kafkaConfig["sasl.password"] = kafkaSaslPassword
+	}
+
 	producer, err := kafka.NewProducer(&kafkaConfig)
 
 	if err != nil {
@@ -66,5 +82,5 @@ func main() {
 		r.POST("/receive", receiveHandler(producer, serializer))
 	}
 
-	r.Run()
+	log.Fatal(r.Run())
 }

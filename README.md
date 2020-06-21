@@ -56,6 +56,13 @@ To connect to Kafka over SSL define the following additonal environment variable
 - `KAFKA_SSL_CLIENT_KEY_PASS`: Kafka SSL client certificate key password (optional), defaults to `""`
 - `KAFKA_SSL_CA_CERT_FILE`: Kafka SSL broker CA certificate file, defaults to `""`
 
+To connect to Kafka over SASL/SCRAM authentication define the following additonal environment variables:
+
+- `KAFKA_SECURITY_PROTOCOL`: Kafka client used protocol to communicate with brokers, you can set it explicitly or ignore it
+- `KAFKA_SASL_MECHANISM`: SASL mechanism to use for authentication, defaults to `""`
+- `KAFKA_SASL_USERNAME`: SASL username for use with the PLAIN and SASL-SCRAM-.. mechanisms, defaults to `""`
+- `KAFKA_SASL_PASSWORD`: SASL password for use with the PLAIN and SASL-SCRAM-.. mechanism, defaults to `""`
+
 When deployed in a Kubernetes cluster using Helm and using a Kafka external to the cluster, it might be necessary to define the kafka hostname resolution locally (this fills the /etc/hosts of the container). Use a custom values.yaml file with section `hostAliases` (as mentioned in default values.yaml).
 
 ### prometheus
