@@ -35,7 +35,10 @@ var (
 	kafkaSslClientKeyFile  = ""
 	kafkaSslClientKeyPass  = ""
 	kafkaSslCACertFile     = ""
-	kafkaSslValidation     = false
+	kafkaSecurityProtocol  = ""
+	kafkaSaslMechanism     = ""
+	kafkaSaslUsername      = ""
+	kafkaSaslPassword      = ""
 	serializer             Serializer
 )
 
@@ -86,6 +89,22 @@ func init() {
 
 	if value := os.Getenv("KAFKA_SSL_CA_CERT_FILE"); value != "" {
 		kafkaSslCACertFile = value
+	}
+
+	if value := os.Getenv("KAFKA_SECURITY_PROTOCOL"); value != "" {
+		kafkaSecurityProtocol = strings.ToLower(value)
+	}
+
+	if value := os.Getenv("KAFKA_SASL_MECHANISM"); value != "" {
+		kafkaSaslMechanism = value
+	}
+
+	if value := os.Getenv("KAFKA_SASL_USERNAME"); value != "" {
+		kafkaSaslUsername = value
+	}
+
+	if value := os.Getenv("KAFKA_SASL_PASSWORD"); value != "" {
+		kafkaSaslPassword = value
 	}
 
 	var err error

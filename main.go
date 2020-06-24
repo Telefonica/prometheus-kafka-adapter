@@ -37,12 +37,30 @@ func main() {
 	}
 
 	if kafkaSslClientCertFile != "" && kafkaSslClientKeyFile != "" && kafkaSslCACertFile != "" {
-		kafkaSslValidation = true
-		kafkaConfig["security.protocol"] = "ssl"
+		if kafkaSecurityProtocol == "" {
+			kafkaSecurityProtocol = "ssl"
+		}
+
+		if kafkaSecurityProtocol != "ssl" && kafkaSecurityProtocol != "sasl_ssl" {
+			logrus.Fatal("invalid config: kafka security protocol is not ssl based but ssl config is provided")
+		}
+
+		kafkaConfig["security.protocol"] = kafkaSecurityProtocol
 		kafkaConfig["ssl.ca.location"] = kafkaSslCACertFile              // CA certificate file for verifying the broker's certificate.
 		kafkaConfig["ssl.certificate.location"] = kafkaSslClientCertFile // Client's certificate
 		kafkaConfig["ssl.key.location"] = kafkaSslClientKeyFile          // Client's key
 		kafkaConfig["ssl.key.password"] = kafkaSslClientKeyPass          // Key password, if any.
+	}
+
+	if kafkaSaslMechanism != "" && kafkaSaslUsername != "" && kafkaSaslPassword != "" {
+		if kafkaSecurityProtocol != "sasl_ssl" && kafkaSecurityProtocol != "sasl_plaintext" {
+			logrus.Fatal("invalid config: kafka security protocol is not sasl based but sasl config is provided")
+		}
+
+		kafkaConfig["security.protocol"] = kafkaSecurityProtocol
+		kafkaConfig["sasl.mechanism"] = kafkaSaslMechanism
+		kafkaConfig["sasl.username"] = kafkaSaslUsername
+		kafkaConfig["sasl.password"] = kafkaSaslPassword
 	}
 
 	producer, err := kafka.NewProducer(&kafkaConfig)
@@ -66,5 +84,5 @@ func main() {
 		r.POST("/receive", receiveHandler(producer, serializer))
 	}
 
-	r.Run()
+	log.Fatal(r.Run())
 }
