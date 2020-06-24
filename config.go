@@ -35,7 +35,6 @@ var (
 	kafkaSslClientKeyFile  = ""
 	kafkaSslClientKeyPass  = ""
 	kafkaSslCACertFile     = ""
-	kafkaSslValidation     = false
 	kafkaSecurityProtocol  = ""
 	kafkaSaslMechanism     = ""
 	kafkaSaslUsername      = ""
@@ -93,7 +92,7 @@ func init() {
 	}
 
 	if value := os.Getenv("KAFKA_SECURITY_PROTOCOL"); value != "" {
-		kafkaSecurityProtocol = value
+		kafkaSecurityProtocol = strings.ToLower(value)
 	}
 
 	if value := os.Getenv("KAFKA_SASL_MECHANISM"); value != "" {

@@ -37,8 +37,15 @@ func main() {
 	}
 
 	if kafkaSslClientCertFile != "" && kafkaSslClientKeyFile != "" && kafkaSslCACertFile != "" {
-		kafkaSslValidation = true
-		kafkaConfig["security.protocol"] = "ssl"
+		if kafkaSecurityProtocol == "" {
+			kafkaSecurityProtocol = "ssl"
+		}
+
+		if kafkaSecurityProtocol != "ssl" && kafkaSecurityProtocol != "sasl_ssl" {
+			logrus.Fatal("invalid config: kafka security protocol is not ssl based but ssl config is provided")
+		}
+
+		kafkaConfig["security.protocol"] = kafkaSecurityProtocol
 		kafkaConfig["ssl.ca.location"] = kafkaSslCACertFile              // CA certificate file for verifying the broker's certificate.
 		kafkaConfig["ssl.certificate.location"] = kafkaSslClientCertFile // Client's certificate
 		kafkaConfig["ssl.key.location"] = kafkaSslClientKeyFile          // Client's key
@@ -46,16 +53,11 @@ func main() {
 	}
 
 	if kafkaSaslMechanism != "" && kafkaSaslUsername != "" && kafkaSaslPassword != "" {
-		if kafkaSecurityProtocol != "" {
-			kafkaConfig["security.protocol"] = kafkaSecurityProtocol
-		} else {
-			if v, _ := kafkaConfig.Get("security.protocol", nil); v == nil {
-				kafkaConfig["security.protocol"] = "sasl_plaintext"
-			} else {
-				kafkaConfig["security.protocol"] = "sasl_ssl"
-			}
+		if kafkaSecurityProtocol != "sasl_ssl" && kafkaSecurityProtocol != "sasl_plaintext" {
+			logrus.Fatal("invalid config: kafka security protocol is not sasl based but sasl config is provided")
 		}
 
+		kafkaConfig["security.protocol"] = kafkaSecurityProtocol
 		kafkaConfig["sasl.mechanism"] = kafkaSaslMechanism
 		kafkaConfig["sasl.username"] = kafkaSaslUsername
 		kafkaConfig["sasl.password"] = kafkaSaslPassword

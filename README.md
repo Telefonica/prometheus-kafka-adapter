@@ -58,7 +58,7 @@ To connect to Kafka over SSL define the following additonal environment variable
 
 To connect to Kafka over SASL/SCRAM authentication define the following additonal environment variables:
 
-- `KAFKA_SECURITY_PROTOCOL`: Kafka client used protocol to communicate with brokers, you can set it explicitly or ignore it
+- `KAFKA_SECURITY_PROTOCOL`: Kafka client used protocol to communicate with brokers, must be set if SASL is going to be used, either plain or with SSL
 - `KAFKA_SASL_MECHANISM`: SASL mechanism to use for authentication, defaults to `""`
 - `KAFKA_SASL_USERNAME`: SASL username for use with the PLAIN and SASL-SCRAM-.. mechanisms, defaults to `""`
 - `KAFKA_SASL_PASSWORD`: SASL password for use with the PLAIN and SASL-SCRAM-.. mechanism, defaults to `""`
