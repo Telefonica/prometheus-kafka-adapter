@@ -11,14 +11,14 @@ import (
 func NewWriteRequest() *prompb.WriteRequest {
 	return &prompb.WriteRequest{
 		Timeseries: []*prompb.TimeSeries{
-			&prompb.TimeSeries{
+			{
 				Labels: []*prompb.Label{
-					&prompb.Label{Name: "__name__", Value: "foo"},
-					&prompb.Label{Name: "labelfoo", Value: "label-bar"},
+					{Name: "__name__", Value: "foo"},
+					{Name: "labelfoo", Value: "label-bar"},
 				},
 				Samples: []*prompb.Sample{
-					&prompb.Sample{Timestamp: 0, Value: 456},
-					&prompb.Sample{Timestamp: 10000, Value: math.Inf(1)},
+					{Timestamp: 0, Value: 456},
+					{Timestamp: 10000, Value: math.Inf(1)},
 				},
 			},
 		},

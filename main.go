@@ -18,10 +18,10 @@ import (
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
-	"github.com/containous/traefik/log"
 	"github.com/gin-gonic/contrib/ginrus"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/common/log"
 	"github.com/sirupsen/logrus"
 )
 
@@ -74,7 +74,6 @@ func main() {
 	r.Use(ginrus.Ginrus(logrus.StandardLogger(), time.RFC3339, true), gin.Recovery())
 
 	r.GET("/metrics", gin.WrapH(prometheus.UninstrumentedHandler()))
-
 	if basicauth {
 		authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
 			basicauthUsername: basicauthPassword,
@@ -84,5 +83,5 @@ func main() {
 		r.POST("/receive", receiveHandler(producer, serializer))
 	}
 
-	log.Fatal(r.Run())
+	logrus.Fatal(r.Run())
 }
