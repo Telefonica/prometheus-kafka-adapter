@@ -80,7 +80,7 @@ When deployed in a Kubernetes cluster using Helm and using an external Prometheu
 
 ```
 go test
-go build
+go build -tags static
 ```
 
 ## contributing

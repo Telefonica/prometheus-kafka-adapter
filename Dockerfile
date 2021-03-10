@@ -10,7 +10,7 @@ WORKDIR /src/prometheus-kafka-adapter
 ADD . /src/prometheus-kafka-adapter
 
 RUN go test
-RUN go build -o /prometheus-kafka-adapter
+RUN go build -tags static -o /prometheus-kafka-adapter
 
 FROM alpine:3.11
 
