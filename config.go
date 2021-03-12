@@ -15,6 +15,10 @@
 package main
 
 import (
+	"fmt"
+	dto "github.com/prometheus/client_model/go"
+	"github.com/prometheus/common/expfmt"
+	"gopkg.in/yaml.v2"
 	"os"
 	"strings"
 	"text/template"
@@ -26,6 +30,7 @@ var (
 	kafkaBrokerList        = "kafka:9092"
 	kafkaTopic             = "metrics"
 	topicTemplate          *template.Template
+	match                  = make(map[string]*dto.MetricFamily, 0)
 	basicauth              = false
 	basicauthUsername      = ""
 	basicauthPassword      = ""
@@ -107,6 +112,14 @@ func init() {
 		kafkaSaslPassword = value
 	}
 
+	if value := os.Getenv("MATCH"); value != "" {
+		matchList, err := parseMatchList(value)
+		if err != nil {
+			logrus.WithError(err).Fatalln("couldn't parse the match rules")
+		}
+		match = matchList
+	}
+
 	var err error
 	serializer, err = parseSerializationFormat(os.Getenv("SERIALIZATION_FORMAT"))
 	if err != nil {
@@ -117,6 +130,27 @@ func init() {
 	if err != nil {
 		logrus.WithError(err).Fatalln("couldn't parse the topic template")
 	}
+}
+
+func parseMatchList(text string) (map[string]*dto.MetricFamily, error) {
+	var matchRules []string
+	err := yaml.Unmarshal([]byte(text), &matchRules)
+	if err != nil {
+		return nil, err
+	}
+	var metricsList []string
+	for _, v := range matchRules {
+		metricsList = append(metricsList, fmt.Sprintf("%s 0\n", v))
+	}
+
+	metricsText := strings.Join(metricsList, "")
+
+	var parser expfmt.TextParser
+	metricFamilies, err := parser.TextToMetricFamilies(strings.NewReader(metricsText))
+	if err != nil {
+		return nil, fmt.Errorf("couldn't parse match rules: %s", err)
+	}
+	return metricFamilies, nil
 }
 
 func parseLogLevel(value string) logrus.Level {

@@ -13,7 +13,7 @@ require (
 	github.com/linkedin/goavro v2.1.0+incompatible
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/prometheus/client_golang v0.8.0
-	github.com/prometheus/client_model v0.2.0 // indirect
+	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.0.0-20180801064454-c7de2306084e
 	github.com/prometheus/procfs v0.1.3 // indirect
 	github.com/prometheus/prometheus v2.4.2+incompatible
@@ -23,6 +23,7 @@ require (
 	google.golang.org/grpc v1.15.0 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6 // indirect
 	gopkg.in/linkedin/goavro.v1 v1.0.5 // indirect
+	gopkg.in/yaml.v2 v2.2.8
 )
 
 go 1.13

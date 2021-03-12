@@ -63,6 +63,8 @@ environment:
   # Kafka SSL broker CA certificate file, defaults to "/ca_cert/ssl_ca_cert.pem" if
   # KAFKA_SSL_CA_CERT is provided, "" otherwise
   KAFKA_SSL_CA_CERT_FILE:
+  # defines the match rules, simple metric name match and label match
+  MATCH:
 
 serviceAccount:
   # Specifies whether a service account should be created

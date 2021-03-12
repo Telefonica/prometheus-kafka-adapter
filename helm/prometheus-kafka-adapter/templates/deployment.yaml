@@ -64,6 +64,10 @@ spec:
                 name: {{ include "prometheus-kafka-adapter.fullname" . }}
                 key: BASIC_AUTH_PASSWORD
           {{- end }}
+          {{- if .Values.environment.MATCH }}
+          - name: MATCH
+            value: {{ .Values.environment.MATCH | quote }}
+          {{- end }}
           - name: LOG_LEVEL
             value: {{ .Values.environment.LOG_LEVEL | quote }}
           - name: GIN_MODE
