@@ -1,19 +1,21 @@
-FROM golang:1.14.4-alpine3.12 as build
+FROM golang:1.16.1-buster as build
 
-# Get prebuilt libkafka.
-RUN apk add --no-cache alpine-sdk 'librdkafka>=1.3.0' 'librdkafka-dev>=1.3.0'
+RUN apt update && apt install build-essential -y
 
 WORKDIR /src/prometheus-kafka-adapter
+
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+
 ADD . /src/prometheus-kafka-adapter
 
-RUN go test
-RUN go build -o /prometheus-kafka-adapter
+RUN go build -o /prometheus-kafka-adapter -ldflags '-w -extldflags "-static"'
+RUN go test ./...
 
-FROM alpine:3.12
+FROM alpine:3.13
 
-RUN apk add --no-cache 'librdkafka>=1.3.0'
-
-COPY --from=build /src/prometheus-kafka-adapter/schemas/metric.avsc /schemas/metric.avsc
+COPY schemas/metric.avsc /schemas/metric.avsc
 COPY --from=build /prometheus-kafka-adapter /
 
 CMD /prometheus-kafka-adapter

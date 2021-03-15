@@ -82,7 +82,7 @@ Building requires librdkafka be available on the building host. It is typically 
 
 ```
 go test
-go build -tags static
+go build
 ```
 
 ## contributing
