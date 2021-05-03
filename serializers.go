@@ -47,12 +47,16 @@ func Serialize(s Serializer, req *prompb.WriteRequest) (map[string][][]byte, err
 		t := topic(labels)
 
 		for _, sample := range ts.Samples {
-			epoch := time.Unix(sample.Timestamp/1000, 0).UTC()
+			name := string(labels["__name__"])
+			if !filter(name, labels) {
+				continue
+			}
 
+			epoch := time.Unix(sample.Timestamp/1000, 0).UTC()
 			m := map[string]interface{}{
 				"timestamp": epoch.Format(time.RFC3339),
 				"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
-				"name":      string(labels["__name__"]),
+				"name":      name,
 				"labels":    labels,
 			}
 
@@ -114,4 +118,34 @@ func topic(labels map[string]string) string {
 		return ""
 	}
 	return buf.String()
+}
+
+func filter(name string, labels map[string]string) bool {
+	if len(match) == 0 {
+		return true
+	}
+	mf, ok := match[name]
+	if !ok {
+		return false
+	}
+
+	for _, m := range mf.Metric {
+		if len(m.Label) == 0 {
+			return true
+		}
+
+		labelMatch := true
+		for _, label := range m.Label {
+			val, ok := labels[label.GetName()]
+			if !ok || val != label.GetValue() {
+				labelMatch = false
+				break
+			}
+		}
+
+		if labelMatch {
+			return true
+		}
+	}
+	return false
 }

@@ -100,6 +100,38 @@ func TestTemplatedTopic(t *testing.T) {
 	}
 }
 
+func TestFilter(t *testing.T) {
+	rulesText := `['foo{y="2"}','foo', 'bar{x="1"}',
+'up{x="1",y="2"}', 'baz{key="valu
+e1;value2"}','bar{y="2"}']`
+
+	rules, _ := parseMatchList(rulesText)
+	for _, mf := range rules {
+		match[mf.GetName()] = mf
+	}
+	type TestCase struct {
+		Name   string
+		Labels map[string]string
+		Expect bool
+	}
+
+	testList := []TestCase{
+		{Name: "foo", Labels: map[string]string{"z": "3"}, Expect: true},
+		{Name: "bar", Labels: map[string]string{"x": "1"}, Expect: true},
+		{Name: "bar", Labels: map[string]string{"x": "2"}, Expect: false},
+		{Name: "bar", Labels: map[string]string{"y": "2"}, Expect: true},
+		{Name: "bar", Labels: map[string]string{"y": "1"}, Expect: false},
+		{Name: "up", Labels: map[string]string{"x": "1", "y": "2"}, Expect: true},
+		{Name: "up", Labels: map[string]string{"x": "1", "y": "2", "z": "3"}, Expect: true},
+		{Name: "up", Labels: map[string]string{"x": "2", "y": "1"}, Expect: false},
+		{Name: "go", Labels: map[string]string{"x": "1", "y": "2"}, Expect: false},
+	}
+
+	for _, tcase := range testList {
+		assert.Equal(t, tcase.Expect, filter(tcase.Name, tcase.Labels))
+	}
+}
+
 func BenchmarkSerializeToAvroJSON(b *testing.B) {
 	serializer, _ := NewAvroJSONSerializer("schemas/metric.avsc")
 	writeRequest := NewWriteRequest()

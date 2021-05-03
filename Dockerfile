@@ -1,24 +1,21 @@
-FROM golang:1.14.4-alpine3.11 as build
+FROM golang:1.16.3-buster as build
 
-# Get prebuilt libkafka.
-# XXX stop using the edgecommunity channel once librdkafka 1.3.0+ is officially published
-RUN echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
-    echo "@edgecommunity http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
-    apk add --no-cache alpine-sdk 'librdkafka@edgecommunity>=1.3.0' 'librdkafka-dev@edgecommunity>=1.3.0'
+RUN apt update
 
 WORKDIR /src/prometheus-kafka-adapter
+
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+
 ADD . /src/prometheus-kafka-adapter
 
-RUN go test
-RUN go build -tags static -o /prometheus-kafka-adapter
+RUN go build -o /prometheus-kafka-adapter
+RUN go test ./...
 
-FROM alpine:3.11
+FROM alpine:3.13
 
-RUN echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories && \
-    echo "@edgecommunity http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
-    apk add --no-cache 'librdkafka@edgecommunity>=1.3.0'
-
-COPY --from=build /src/prometheus-kafka-adapter/schemas/metric.avsc /schemas/metric.avsc
+COPY schemas/metric.avsc /schemas/metric.avsc
 COPY --from=build /prometheus-kafka-adapter /
 
 CMD /prometheus-kafka-adapter
