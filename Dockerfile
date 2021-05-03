@@ -1,7 +1,5 @@
 FROM golang:1.16.3-buster as build
 
-RUN apt update
-
 WORKDIR /src/prometheus-kafka-adapter
 
 COPY go.mod .
