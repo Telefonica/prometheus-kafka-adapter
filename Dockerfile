@@ -1,6 +1,4 @@
-FROM golang:1.16.1-buster as build
-
-RUN apt update && apt install build-essential -y
+FROM golang:1.16.3-buster as build
 
 WORKDIR /src/prometheus-kafka-adapter
 

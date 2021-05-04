@@ -78,8 +78,6 @@ When deployed in a Kubernetes cluster using Helm and using an external Prometheu
 
 ## development
 
-Building requires librdkafka be available on the building host. It is typically available in distribution package archives, but can also be downloaded and built from here: https://github.com/edenhill/librdkafka.git
-
 ```
 go test
 go build
