@@ -20,13 +20,12 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/contrib/ginrus"
 	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/common/log"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
-	log.Info("creating kafka producer")
+	logrus.Info("creating kafka producer")
 
 	kafkaConfig := kafka.ConfigMap{
 		"bootstrap.servers":   kafkaBrokerList,
@@ -73,7 +72,7 @@ func main() {
 
 	r.Use(ginrus.Ginrus(logrus.StandardLogger(), time.RFC3339, true), gin.Recovery())
 
-	r.GET("/metrics", gin.WrapH(prometheus.UninstrumentedHandler()))
+	r.GET("/metrics", gin.WrapH(promhttp.Handler()))
 	if basicauth {
 		authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
 			basicauthUsername: basicauthPassword,
