@@ -74,6 +74,7 @@ func main() {
 	r.Use(ginrus.Ginrus(logrus.StandardLogger(), time.RFC3339, true), gin.Recovery())
 
 	r.GET("/metrics", gin.WrapH(prometheus.UninstrumentedHandler()))
+	r.GET("/health", func(c *gin.Context) { c.JSON(200, gin.H{"status": "UP"}) })
 	if basicauth {
 		authorized := r.Group("/", gin.BasicAuth(gin.Accounts{
 			basicauthUsername: basicauthPassword,
