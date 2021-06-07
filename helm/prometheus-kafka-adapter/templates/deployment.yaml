@@ -97,11 +97,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /metrics
+              path: /health
               port: http
           readinessProbe:
             httpGet:
-              path: /metrics
+              path: /health
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
