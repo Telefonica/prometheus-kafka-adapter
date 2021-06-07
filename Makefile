@@ -1,41 +1,35 @@
 NAME := prometheus-kafka-adapter
 GO_VER := 1.16.5
-BUILD_GO_VER := $(GO_VER)-buster
 LIBC_GO_VER := $(GO_VER)-buster
 MUSL_GO_VER := $(GO_VER)-alpine
 
-all: fmt vet test build
+all: build
 
 fmt:
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(BUILD_GO_VER) gofmt -l -w -s *.go
 
-test:
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(BUILD_GO_VER) go test ./...
-
-vet-libc:
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(LIBC_GO_VER) go vet -mod=vendor ./*.go
-
-vendor-update: vendor-init tidy vendor
-
-vendor-init:
-	rm -rf go.mod go.sum vendor/
+vendor-update:
+	rm -rf go.mod go.sum
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(BUILD_GO_VER) go mod init $(NAME)
-
-tidy:
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(BUILD_GO_VER) go mod tidy
-
-vendor:
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(BUILD_GO_VER) go mod vendor
-
 
 build: build-libc build-musl
 
 build-libc:
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(LIBC_GO_VER) go build -mod=vendor -o $(NAME)-libc ./...
+	#docker run --rm -v $(CURDIR):/app:z -w /app golang:$(LIBC_GO_VER) sh build.sh
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(LIBC_GO_VER) go test ./...
+	rm -rf vendor/
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(LIBC_GO_VER) go mod vendor
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(LIBC_GO_VER) go vet -mod=vendor ./*.go
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(LIBC_GO_VER) go build -mod=vendor -ldflags='-w -s -extldflags "-static"' -o $(NAME) ./...
+	rm -rf vendor/
 	docker build --build-arg binary=$(NAME)-libc .
 
 build-musl:
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go build -tags musl -o $(NAME)-musl ./...
+	#docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh build.sh
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go test -tags musl ./...
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go vet -tags musl ./*.go
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go build -ldflags='-w -s -extldflags "-static"' -tags musl -o $(NAME) ./...
 	docker build --build-arg binary=$(NAME)-musl .
 
 clean:
