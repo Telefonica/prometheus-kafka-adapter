@@ -13,3 +13,4 @@
 
 prometheus-kafka-adapter-libc
 prometheus-kafka-adapter-musl
+vendor/
