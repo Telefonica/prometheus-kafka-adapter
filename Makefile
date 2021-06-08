@@ -16,10 +16,10 @@ vendor-update:
 build: build-libc build-musl
 
 build-libc:
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(LIBC_GO_VER) sh build.sh $(NAME)
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(LIBC_GO_VER) sh buildscript.sh $(NAME)
 
 build-musl:
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh build.sh $(NAME)
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh buildscript.sh $(NAME)
 	docker build .
 
 clean:
