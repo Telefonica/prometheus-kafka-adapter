@@ -5,10 +5,6 @@ MUSL_GO_VER := $(GO_VER)-alpine
 
 all: fmt test vet build
 
-vendor:
-	rm -rf vendor/
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) apk add --no-cache gcc musl-dev && go mod vendor
-
 fmt:
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) gofmt -l -w -s *.go
 
@@ -17,11 +13,6 @@ test:
 
 vet:
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh tools/testscript.sh vet
-
-vendor-update:
-	rm -rf go.mod go.sum
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go mod init $(NAME)
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go mod tidy
 
 build: build-libc build-musl
 
@@ -32,6 +23,15 @@ build-musl:
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh tools/buildscript.sh $(NAME)
 	# only build docker with the musl libraries 'cause we use an alpine container
 	docker build .
+
+vendor-update:
+	rm -rf go.mod go.sum
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go mod init $(NAME)
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go mod tidy
+
+vendor:
+	rm -rf vendor/
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) apk add --no-cache gcc musl-dev && go mod vendor
 
 clean:
 	rm -f $(NAME)-libc $(NAME)-musl
