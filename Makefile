@@ -5,6 +5,10 @@ MUSL_GO_VER := $(GO_VER)-alpine
 
 all: fmt test vet build
 
+vendor:
+	rm -rf vendor/
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) apk add --no-cache gcc musl-dev && go mod vendor
+
 fmt:
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) gofmt -l -w -s *.go
 
