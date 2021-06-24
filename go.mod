@@ -12,7 +12,7 @@ require (
 	github.com/linkedin/goavro v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.11.0
 	github.com/prometheus/client_model v0.2.0
-	github.com/prometheus/common v0.28.0
+	github.com/prometheus/common v0.29.0
 	github.com/prometheus/prometheus v2.5.0+incompatible
 	github.com/sirupsen/logrus v1.8.1
 	github.com/stretchr/testify v1.7.0
