@@ -25,12 +25,9 @@ build-musl:
 	docker build .
 
 vendor-update:
-	rm -rf go.mod go.sum
+	rm -rf go.mod go.sum vendor/
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go mod init $(NAME)
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go mod tidy
-
-vendor:
-	rm -rf vendor/
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) apk add --no-cache gcc musl-dev && go mod vendor
 
 clean:
