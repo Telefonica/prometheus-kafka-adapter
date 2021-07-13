@@ -22,6 +22,11 @@ var (
 			Name: "http_requests_total",
 			Help: "Count of all http requests",
 		})
+	promBatches = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "incoming_prometheus_batches_total",
+			Help: "Count of incoming prometheus batches (to be broken into individual metrics)"
+		})
 	serializeTotal = prometheus.NewCounter(
 		prometheus.CounterOpts{
 			Name: "serialized_total",
@@ -51,6 +56,7 @@ var (
 
 func init() {
 	prometheus.MustRegister(httpRequestsTotal)
+	prometheus.MustRegister(promBatches)
 	prometheus.MustRegister(serializeTotal)
 	prometheus.MustRegister(serializeFailed)
 	prometheus.MustRegister(objectsFiltered)
