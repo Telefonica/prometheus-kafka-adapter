@@ -1,5 +1,5 @@
 NAME := prometheus-kafka-adapter
-GO_VER := 1.16.5
+GO_VER := 1.16.6
 LIBC_GO_VER := $(GO_VER)-buster
 MUSL_GO_VER := $(GO_VER)-alpine
 
