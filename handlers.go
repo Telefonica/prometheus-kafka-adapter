@@ -76,6 +76,7 @@ func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin
 				}, nil)
 
 				if err != nil {
+					objectsFailed.Add(float64(1))
 					c.AbortWithStatus(http.StatusInternalServerError)
 					logrus.WithError(err).Error(fmt.Sprintf("couldn't produce message in kafka topic %v", topic))
 					return
