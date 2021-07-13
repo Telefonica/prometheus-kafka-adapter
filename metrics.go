@@ -22,8 +22,26 @@ var (
 			Name: "http_requests_total",
 			Help: "Count of all http requests",
 		})
+	serializeTotal = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "serialize_total",
+			Help: "Count of all serialization requests",
+		})
+	serializeFailed = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "serialize_failed",
+			Help: "Count of all serialization failures",
+		})
+	objectsFiltered = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "objects_filtered",
+			Help: "Count of all filter attempts",
+		})
 )
 
 func init() {
 	prometheus.MustRegister(httpRequestsTotal)
+	prometheus.MustRegister(serializeTotal)
+	prometheus.MustRegister(serializeFailed)
+	prometheus.MustRegister(objectsFiltered)
 }
