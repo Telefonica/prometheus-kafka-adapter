@@ -17,6 +17,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"strconv"
 	"time"
@@ -64,7 +65,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) (map[string][][]byte, err
 
 			data, err := s.Marshal(m)
 			if err != nil {
-				logrus.WithError(err).Errorln("couldn't marshal timeseries")
+				logrus.WithError(err).Errorln(fmt.Sprintf("couldn't marshal timeseries: %v", sample))
 				serializeFailed.Add(float64(1))
 			}
 
