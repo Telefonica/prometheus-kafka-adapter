@@ -1,19 +1,8 @@
-FROM golang:1.16.3-buster as build
-
-WORKDIR /src/prometheus-kafka-adapter
-
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
-
-ADD . /src/prometheus-kafka-adapter
-
-RUN go build -o /prometheus-kafka-adapter -ldflags '-w -extldflags "-static"'
-RUN go test ./...
-
 FROM alpine:3.13
+ARG binary=prometheus-kafka-adapter
 
+RUN apk add --no-cache ca-certificates
 COPY schemas/metric.avsc /schemas/metric.avsc
-COPY --from=build /prometheus-kafka-adapter /
+COPY prometheus-kafka-adapter-musl /${binary}
 
-CMD /prometheus-kafka-adapter
+CMD /${binary}

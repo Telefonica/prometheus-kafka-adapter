@@ -17,6 +17,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"strconv"
 	"time"
@@ -36,6 +37,7 @@ type Serializer interface {
 // Serialize generates the JSON representation for a given Prometheus metric.
 func Serialize(s Serializer, req *prompb.WriteRequest) (map[string][][]byte, error) {
 	result := make(map[string][][]byte)
+	serializeTotal.Add(float64(1))
 
 	for _, ts := range req.Timeseries {
 		labels := make(map[string]string, len(ts.Labels))
@@ -49,6 +51,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) (map[string][][]byte, err
 		for _, sample := range ts.Samples {
 			name := string(labels["__name__"])
 			if !filter(name, labels) {
+				objectsFiltered.Add(float64(1))
 				continue
 			}
 
@@ -62,7 +65,8 @@ func Serialize(s Serializer, req *prompb.WriteRequest) (map[string][][]byte, err
 
 			data, err := s.Marshal(m)
 			if err != nil {
-				logrus.WithError(err).Errorln("couldn't marshal timeseries")
+				logrus.WithError(err).Errorln(fmt.Sprintf("couldn't marshal timeseries: %v", sample))
+				serializeFailed.Add(float64(1))
 			}
 
 			result[t] = append(result[t], data)
