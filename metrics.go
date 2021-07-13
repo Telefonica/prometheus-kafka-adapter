@@ -37,6 +37,16 @@ var (
 			Name: "objects_filtered_total",
 			Help: "Count of all filter attempts",
 		})
+	objectsWritten = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "objects_written_total",
+			Help: "Count of all objects written to Kafka",
+		})
+	objectsFailed = prometheus.NewCounter(
+		prometheus.CounterOpts{
+			Name: "objects_failed_total",
+			Help: "Count of all objects write failures to Kafka",
+		})
 )
 
 func init() {
@@ -44,4 +54,6 @@ func init() {
 	prometheus.MustRegister(serializeTotal)
 	prometheus.MustRegister(serializeFailed)
 	prometheus.MustRegister(objectsFiltered)
+	prometheus.MustRegister(objectsFailed)
+	prometheus.MustRegister(objectsWritten)
 }

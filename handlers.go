@@ -69,6 +69,7 @@ func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin
 				Topic:     &t,
 			}
 			for _, metric := range metrics {
+				objectsWritten.Add(float64(1))
 				err := producer.Produce(&kafka.Message{
 					TopicPartition: part,
 					Value:          metric,
