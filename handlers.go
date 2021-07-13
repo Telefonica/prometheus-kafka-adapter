@@ -15,6 +15,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -68,6 +69,7 @@ func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin
 				Topic:     &t,
 			}
 			for _, metric := range metrics {
+				objectsWritten.Add(float64(1))
 				err := producer.Produce(&kafka.Message{
 					TopicPartition: part,
 					Value:          metric,
@@ -75,7 +77,7 @@ func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin
 
 				if err != nil {
 					c.AbortWithStatus(http.StatusInternalServerError)
-					logrus.WithError(err).Error("couldn't produce message in kafka")
+					logrus.WithError(err).Error(fmt.Sprintf("couldn't produce message in kafka topic %v", topic))
 					return
 				}
 			}
