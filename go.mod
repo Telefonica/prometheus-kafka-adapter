@@ -7,7 +7,7 @@ require (
 	github.com/gin-gonic/contrib v0.0.0-20201101042839-6a891bf89f19
 	github.com/gin-gonic/gin v1.7.2
 	github.com/gogo/protobuf v1.3.2
-	github.com/golang/snappy v0.0.3
+	github.com/golang/snappy v0.0.4
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/linkedin/goavro v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.11.0
