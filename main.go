@@ -15,6 +15,7 @@
 package main
 
 import (
+	"context"
 	"time"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
@@ -26,6 +27,9 @@ import (
 
 func main() {
 	logrus.Info("creating kafka producer")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	kafkaConfig := kafka.ConfigMap{
 		"bootstrap.servers":   kafkaBrokerList,
@@ -66,6 +70,12 @@ func main() {
 
 	if err != nil {
 		logrus.WithError(err).Fatal("couldn't create kafka producer")
+	}
+
+	if kafkaPartitionLabels != nil {
+		if err := syncTopicMetadata(ctx, producer); err != nil {
+			logrus.WithError(err).Fatal("couldn't fetch topic metadata")
+		}
 	}
 
 	r := gin.New()
