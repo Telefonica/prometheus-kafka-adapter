@@ -1,0 +1,29 @@
+name: Go
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: |
+       go test -v ./...
+       docker build -t telefonica/prometheus-kafka-adapter .
+       docker run -d --name test telefonica/prometheus-kafka-adapter
+       if [ $(docker inspect -f {{.State.Status}} test) = "running" ]; then echo "OK"; exit 0; else echo "FAILED"; exit 1; fi
