@@ -1,6 +1,6 @@
 # prometheus-kafka-adapter
 
-[![Build Status](https://travis-ci.org/Telefonica/prometheus-kafka-adapter.svg?branch=master)](https://travis-ci.org/Telefonica/prometheus-kafka-adapter)
+[![CI](https://github.com/Telefonica/prometheus-kafka-adapter/workflows/CI/badge.svg?event=push)](https://github.com/Telefonica/prometheus-kafka-adapter/actions)
 
 Prometheus-kafka-adapter is a service which receives [Prometheus](https://github.com/prometheus) metrics through [`remote_write`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write), marshal into JSON and sends them into [Kafka](https://github.com/apache/kafka).
 
