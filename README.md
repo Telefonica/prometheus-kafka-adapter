@@ -1,6 +1,6 @@
 # prometheus-kafka-adapter
 
-[![CI](https://github.com/Telefonica/prometheus-kafka-adapter/workflows/CI/badge.svg?event=push)](https://github.com/Telefonica/prometheus-kafka-adapter/actions)
+[![CI](https://github.com/Telefonica/prometheus-kafka-adapter/workflows/Go/badge.svg?event=push)](https://github.com/Telefonica/prometheus-kafka-adapter/actions)
 
 Prometheus-kafka-adapter is a service which receives [Prometheus](https://github.com/prometheus) metrics through [`remote_write`](https://prometheus.io/docs/prometheus/latest/configuration/configuration/#remote_write), marshal into JSON and sends them into [Kafka](https://github.com/apache/kafka).
 
@@ -92,7 +92,7 @@ With issues:
 
 With pull requests:
   - Open your pull request against `master`
-  - It should pass all tests in the continuous integration pipeline (TravisCI).
+  - It should pass all tests in the continuous integration pipeline (Github Actions).
   - You should add/modify tests to cover your proposed code changes.
   - If your pull request contains a new feature, please document it in this README.
 
