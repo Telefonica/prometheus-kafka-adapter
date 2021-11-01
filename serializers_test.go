@@ -16,7 +16,7 @@ func NewWriteRequest() *prompb.WriteRequest {
 					{Name: "__name__", Value: "foo"},
 					{Name: "labelfoo", Value: "label-bar"},
 				},
-				Samples: []*prompb.Sample{
+				Samples: []prompb.Sample{
 					{Timestamp: 0, Value: 456},
 					{Timestamp: 10000, Value: math.Inf(1)},
 				},
@@ -95,7 +95,7 @@ func TestTemplatedTopic(t *testing.T) {
 	writeRequest := NewWriteRequest()
 	output, err := Serialize(serializer, writeRequest)
 
-	for k, _ := range output {
+	for k := range output {
 		assert.Equal(t, "foo", k, "templated topic failed")
 	}
 }
