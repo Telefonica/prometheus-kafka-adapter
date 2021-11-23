@@ -19,8 +19,6 @@ build-libc:
 
 build-musl:
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh tools/buildscript.sh $(NAME)
-	# only build docker with the musl libraries 'cause we use an alpine container
-	docker build .
 
 vendor-update:
 	rm -rf go.mod go.sum vendor/
