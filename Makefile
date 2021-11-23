@@ -1,6 +1,6 @@
 NAME := prometheus-kafka-adapter
 PACKAGE_NAME := github.com/Telefonica/prometheus-kafka-adapter
-GO_VER := 1.17.2
+GO_VER := 1.17.3
 LIBC_GO_VER := $(GO_VER)-buster
 MUSL_GO_VER := $(GO_VER)-alpine
 
@@ -10,6 +10,7 @@ fmt:
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) gofmt -l -w -s *.go
 
 test:
+	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh tools/testscript.sh vet
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh tools/testscript.sh test
 
 build: build-libc build-musl
