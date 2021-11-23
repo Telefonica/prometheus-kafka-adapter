@@ -1,4 +1,4 @@
-FROM alpine:3.14 as build
+FROM golang:1.17.3-alpine as build
 
 WORKDIR /src/prometheus-kafka-adapter
 
