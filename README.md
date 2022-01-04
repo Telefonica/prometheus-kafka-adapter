@@ -78,10 +78,13 @@ When deployed in a Kubernetes cluster using Helm and using an external Prometheu
 
 ## development
 
-```
-go test
-go build
-```
+The provided Makefile can do basic linting/building for you simply:
+
+* `make fmt` -> basic formatting.
+* `make test` -> runs `go test` fixtures
+* `make vet` -> runs `go vet` against the package
+* `make vendor-update` -> ensure dependencies are up to date
+* `make` -> builds libc and musl based binaries, including testing and vetting code
 
 ## contributing
 

@@ -1,17 +1,14 @@
-FROM golang:1.16.3-buster as build
-
+FROM golang:1.17.3-alpine as build
 WORKDIR /src/prometheus-kafka-adapter
 
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
+COPY go.mod go.sum vendor *.go ./
 
 ADD . /src/prometheus-kafka-adapter
 
-RUN go build -o /prometheus-kafka-adapter -ldflags '-w -extldflags "-static"'
-RUN go test ./...
+RUN apk add --no-cache gcc musl-dev
+RUN go build -ldflags='-w -s -extldflags "-static"' -tags musl,static,netgo -mod=vendor -o /prometheus-kafka-adapter
 
-FROM alpine:3.13
+FROM alpine:3.14
 
 COPY schemas/metric.avsc /schemas/metric.avsc
 COPY --from=build /prometheus-kafka-adapter /

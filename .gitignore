@@ -11,4 +11,6 @@
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-/prometheus-kafka-adapter
+prometheus-kafka-adapter-libc
+prometheus-kafka-adapter-musl
+prometheus-kafka-adapter
