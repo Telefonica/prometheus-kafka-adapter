@@ -49,14 +49,14 @@ Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends th
 - `LOG_LEVEL`: defines log level for [`logrus`](https://github.com/sirupsen/logrus), can be `debug`, `info`, `warn`, `error`, `fatal` or `panic`, defaults to `info`.
 - `GIN_MODE`: manage [gin](https://github.com/gin-gonic/gin) debug logging, can be `debug` or `release`.
 
-To connect to Kafka over SSL define the following additonal environment variables:
+To connect to Kafka over SSL define the following additional environment variables:
 
 - `KAFKA_SSL_CLIENT_CERT_FILE`: Kafka SSL client certificate file, defaults to `""`
 - `KAFKA_SSL_CLIENT_KEY_FILE`: Kafka SSL client certificate key file, defaults to `""`
 - `KAFKA_SSL_CLIENT_KEY_PASS`: Kafka SSL client certificate key password (optional), defaults to `""`
 - `KAFKA_SSL_CA_CERT_FILE`: Kafka SSL broker CA certificate file, defaults to `""`
 
-To connect to Kafka over SASL/SCRAM authentication define the following additonal environment variables:
+To connect to Kafka over SASL/SCRAM authentication define the following additional environment variables:
 
 - `KAFKA_SECURITY_PROTOCOL`: Kafka client used protocol to communicate with brokers, must be set if SASL is going to be used, either plain or with SSL
 - `KAFKA_SASL_MECHANISM`: SASL mechanism to use for authentication, defaults to `""`
