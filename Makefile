@@ -25,10 +25,6 @@ build-docker-image:
 	docker build -t telefonica/prometheus-kafka-adapter:latest .
 
 vendor-update:
-	rm -rf go.mod go.sum vendor/
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go mod init $(PACKAGE_NAME)
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) go mod tidy
-	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) apk add --no-cache gcc musl-dev && go mod vendor
-
+	docker run --rm -e PACKAGE_NAME=$(PACKAGE_NAME) -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh tools/vendorscript.sh
 clean:
 	rm -f $(NAME)-libc $(NAME)-musl
