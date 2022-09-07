@@ -1,6 +1,6 @@
 NAME := prometheus-kafka-adapter
 PACKAGE_NAME := github.com/Telefonica/prometheus-kafka-adapter
-GO_VER := 1.17.5
+GO_VER := 1.19.1
 LIBC_GO_VER := $(GO_VER)-buster
 MUSL_GO_VER := $(GO_VER)-alpine
 
@@ -22,7 +22,7 @@ build-musl:
 	docker run --rm -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh tools/buildscript.sh $(NAME)
 
 build-docker-image:
-	docker build -t telefonica/prometheus-kafka-adapter:latest .
+	docker buildx build -t telefonica/prometheus-kafka-adapter:latest .
 
 vendor-update:
 	docker run --rm -e PACKAGE_NAME=$(PACKAGE_NAME) -v $(CURDIR):/app:z -w /app golang:$(MUSL_GO_VER) sh tools/vendorscript.sh
