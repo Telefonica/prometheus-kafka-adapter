@@ -62,6 +62,33 @@ these tags should be specified on the **application** build/get/install command.
 
 
 
+## Release process
+
+For each release candidate and final release, perform the following steps:
+
+### Review the CHANGELOG
+
+### Update bundle to latest librdkafka
+
+See instructions in [kafka/librdkafka/README.md](kafka/librdkafka/README.md).
+
+
+### Update librdkafka version requirement
+
+Update the minimum required librdkafka version in `kafka/00version.go`
+and `README.md` and the version in `examples/go.mod` and `mk/doc-gen.py`.
+
+### Update error codes
+
+Error codes can be automatically generated from the current librdkafka version.
+
+
+Update generated error codes:
+
+    $ make -f mk/Makefile generr
+    # Verify by building
+
+
 ## Generating HTML documentation
 
 To generate one-page HTML documentation run the mk/doc-gen.py script from the
@@ -73,32 +100,6 @@ $ pip install beautifulsoup4
 ...
 $ make -f mk/Makefile docs
 ```
-
-
-## Release process
-
-For each release candidate and final release, perform the following steps:
-
-### Update bundle to latest librdkafka
-
-See instructions in [kafka/librdkafka/README.md](kafka/librdkafka/README.md).
-
-
-### Update librdkafka version requirement
-
-Update the minimum required librdkafka version in `kafka/00version.go`
-and `README.md`.
-
-
-### Update error codes
-
-Error codes can be automatically generated from the current librdkafka version.
-
-
-Update generated error codes:
-
-    $ make -f mk/Makefile generr
-    # Verify by building
 
 
 ### Rebuild everything
@@ -125,11 +126,6 @@ Manually verify that the examples/ applications work.
 
 Also make sure the examples in README.md work.
 
-Convert any examples using `github.com/confluentinc/confluent-kafka-go/kafka` to use
-`gopkg.in/confluentinc/confluent-kafka-go.v1/kafka` import path.
-
-    $ find examples/ -type f -name *\.go -exec sed -i -e 's|github\.com/confluentinc/confluent-kafka-go/kafka|gopkg\.in/confluentinc/confluent-kafka-go\.v1/kafka|g' {} +
-
 ### Commit any changes
 
 Make sure to push to github before creating the tag to have CI tests pass.
@@ -143,3 +139,13 @@ Make sure to push to github before creating the tag to have CI tests pass.
 
 
 ### Create release notes page on github
+
+### Update version in Confluent docs
+
+Put the new version in settings.sh of these two repos
+
+https://github.com/confluentinc/docs
+
+https://github.com/confluentinc/docs-platform
+
+### Don't forget tweeting it!

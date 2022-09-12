@@ -10,9 +10,9 @@ import (
 
 func NewWriteRequest() *prompb.WriteRequest {
 	return &prompb.WriteRequest{
-		Timeseries: []*prompb.TimeSeries{
+		Timeseries: []prompb.TimeSeries{
 			{
-				Labels: []*prompb.Label{
+				Labels: []prompb.Label{
 					{Name: "__name__", Value: "foo"},
 					{Name: "labelfoo", Value: "label-bar"},
 				},
