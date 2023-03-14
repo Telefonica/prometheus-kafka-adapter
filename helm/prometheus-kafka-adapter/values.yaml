@@ -32,6 +32,8 @@ KAFKA_SSL_CA_CERT:
 #    - ""
 
 environment:
+  # defines the API endpoint of the prometheus server to read the metadata of the metrics from, eg http://localhost:9090/api/v1/metadata. If this is not set,metadata is not included in the topic message
+  PROM_API_ENDPOINT: ""
   # defines kafka endpoint and port, defaults to kafka:9092.
   KAFKA_BROKER_LIST: ""
   # defines kafka topic to be used, defaults to metrics.

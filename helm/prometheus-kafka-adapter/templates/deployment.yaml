@@ -39,6 +39,8 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+          - name: PROM_API_ENDPOINT
+            value: {{ .Values.environment.PROM_API_ENDPOINT | quote }} # may want customizable service references
           - name: KAFKA_BROKER_LIST
             value: {{ tpl .Values.environment.KAFKA_BROKER_LIST . }} # may want customizable service references
           - name: KAFKA_TOPIC
