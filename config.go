@@ -16,18 +16,27 @@ package main
 
 import (
 	"fmt"
-	dto "github.com/prometheus/client_model/go"
-	"github.com/prometheus/common/expfmt"
-	"gopkg.in/yaml.v2"
 	"os"
 	"strings"
 	"text/template"
 
+	dto "github.com/prometheus/client_model/go"
+	"github.com/prometheus/common/expfmt"
+	"gopkg.in/yaml.v2"
+
 	"github.com/sirupsen/logrus"
 )
 
+type MetricAttributes struct {
+	metricType string
+	metricHelp string
+	metricUnit string
+}
+
 var (
 	kafkaBrokerList        = "kafka:9092"
+	promAPIEndPoint        = ""
+	getMetricAttributes    = false
 	kafkaTopic             = "metrics"
 	topicTemplate          *template.Template
 	match                  = make(map[string]*dto.MetricFamily, 0)
@@ -45,6 +54,7 @@ var (
 	kafkaSaslUsername      = ""
 	kafkaSaslPassword      = ""
 	serializer             Serializer
+	metricsList            = make(map[string]MetricAttributes)
 )
 
 func init() {
@@ -53,6 +63,11 @@ func init() {
 
 	if value := os.Getenv("LOG_LEVEL"); value != "" {
 		logrus.SetLevel(parseLogLevel(value))
+	}
+
+	if value := os.Getenv("PROM_API_ENDPOINT"); value != "" {
+		promAPIEndPoint = value
+		getMetricAttributes = true
 	}
 
 	if value := os.Getenv("KAFKA_BROKER_LIST"); value != "" {

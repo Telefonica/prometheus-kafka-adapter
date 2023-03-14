@@ -63,6 +63,10 @@ func main() {
 	}
 
 	producer, err := kafka.NewProducer(&kafkaConfig)
+	logrus.Info("Prometheus URL is " + promAPIEndPoint)
+	if getMetricAttributes == true {
+		GetAllMetricAttributes(promAPIEndPoint, metricsList)
+	}
 
 	if err != nil {
 		logrus.WithError(err).Fatal("couldn't create kafka producer")

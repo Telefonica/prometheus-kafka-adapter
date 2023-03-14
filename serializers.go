@@ -60,6 +60,9 @@ func Serialize(s Serializer, req *prompb.WriteRequest) (map[string][][]byte, err
 				"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
 				"name":      name,
 				"labels":    labels,
+				"type":      metricsList[name].metricType,
+				"help":      metricsList[name].metricHelp,
+				"unit":      metricsList[name].metricUnit,
 			}
 
 			data, err := s.Marshal(m)
