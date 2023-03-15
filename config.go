@@ -27,7 +27,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type MetricAttributes struct {
+type MetricMetadata struct {
 	metricType string
 	metricHelp string
 	metricUnit string
@@ -35,8 +35,8 @@ type MetricAttributes struct {
 
 var (
 	kafkaBrokerList        = "kafka:9092"
-	promAPIEndPoint        = ""
-	getMetricAttributes    = false
+	promMetaDataEndPoint   = ""
+	getMetricMetadata      = false
 	kafkaTopic             = "metrics"
 	topicTemplate          *template.Template
 	match                  = make(map[string]*dto.MetricFamily, 0)
@@ -54,7 +54,8 @@ var (
 	kafkaSaslUsername      = ""
 	kafkaSaslPassword      = ""
 	serializer             Serializer
-	metricsList            = make(map[string]MetricAttributes)
+	metricsList            = make(map[string]MetricMetadata)
+	includedMetaData       = "type"
 )
 
 func init() {
@@ -65,9 +66,13 @@ func init() {
 		logrus.SetLevel(parseLogLevel(value))
 	}
 
-	if value := os.Getenv("PROM_API_ENDPOINT"); value != "" {
-		promAPIEndPoint = value
-		getMetricAttributes = true
+	if value := os.Getenv("PROM_METADATA_ENDPOINT"); value != "" {
+		promMetaDataEndPoint = value
+		getMetricMetadata = true
+	}
+
+	if value := os.Getenv("INLCUDED_METADATA"); value != "" {
+		includedMetaData = value
 	}
 
 	if value := os.Getenv("KAFKA_BROKER_LIST"); value != "" {

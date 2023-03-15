@@ -63,9 +63,9 @@ func main() {
 	}
 
 	producer, err := kafka.NewProducer(&kafkaConfig)
-	logrus.Info("Prometheus URL is " + promAPIEndPoint)
-	if getMetricAttributes == true {
-		GetAllMetricAttributes(promAPIEndPoint, metricsList)
+	if getMetricMetadata == true {
+		logrus.Debugf("Prometheus API URL is %s", promMetaDataEndPoint)
+		GetAllMetricMetadata(promMetaDataEndPoint, metricsList)
 	}
 
 	if err != nil {

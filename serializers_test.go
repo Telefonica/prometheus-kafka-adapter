@@ -46,8 +46,8 @@ func TestSerializeToJSON(t *testing.T) {
 	assert.Nil(t, err)
 
 	expectedSamples := []string{
-		"{\"value\":\"456\",\"timestamp\":\"1970-01-01T00:00:00Z\",\"name\":\"foo\",\"labels\":{\"__name__\":\"foo\",\"labelfoo\":\"label-bar\"},\"type\":\"\",\"help\":\"\",\"unit\":\"\"}",
-		"{\"value\":\"+Inf\",\"timestamp\":\"1970-01-01T00:00:10Z\",\"name\":\"foo\",\"labels\":{\"__name__\":\"foo\",\"labelfoo\":\"label-bar\"},\"type\":\"\",\"help\":\"\",\"unit\":\"\"}",
+		"{\"value\":\"456\",\"timestamp\":\"1970-01-01T00:00:00Z\",\"name\":\"foo\",\"labels\":{\"__name__\":\"foo\",\"labelfoo\":\"label-bar\"}}",
+		"{\"value\":\"+Inf\",\"timestamp\":\"1970-01-01T00:00:10Z\",\"name\":\"foo\",\"labels\":{\"__name__\":\"foo\",\"labelfoo\":\"label-bar\"}}",
 	}
 
 	for i, metric := range output["metrics"] {
@@ -76,8 +76,8 @@ func TestSerializeToAvro(t *testing.T) {
 	assert.Nil(t, err)
 
 	expectedSamples := []string{
-		"{\"value\":\"456\",\"timestamp\":\"1970-01-01T00:00:00Z\",\"name\":\"foo\",\"labels\":{\"__name__\":\"foo\",\"labelfoo\":\"label-bar\"},\"type\":\"\",\"help\":\"\",\"unit\":\"\"}",
-		"{\"value\":\"+Inf\",\"timestamp\":\"1970-01-01T00:00:10Z\",\"name\":\"foo\",\"labels\":{\"__name__\":\"foo\",\"labelfoo\":\"label-bar\"},\"type\":\"\",\"help\":\"\",\"unit\":\"\"}",
+		"{\"value\":\"456\",\"timestamp\":\"1970-01-01T00:00:00Z\",\"name\":\"foo\",\"labels\":{\"__name__\":\"foo\",\"labelfoo\":\"label-bar\"}}",
+		"{\"value\":\"+Inf\",\"timestamp\":\"1970-01-01T00:00:10Z\",\"name\":\"foo\",\"labels\":{\"__name__\":\"foo\",\"labelfoo\":\"label-bar\"}}",
 	}
 
 	for i, metric := range output["metrics"] {

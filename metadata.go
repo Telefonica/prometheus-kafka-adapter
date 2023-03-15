@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/sirupsen/logrus"
 )
 
-func GetAllMetricAttributes(promAPIEndPoint string, metricsList map[string]MetricAttributes) {
+func GetAllMetricMetadata(promMetaDataEndPoint string, metricsList map[string]MetricMetadata) {
 
 	// Make a GET request to the Prometheus metadata API
-	response, err := http.Get(promAPIEndPoint)
+	response, err := http.Get(promMetaDataEndPoint)
 	if err != nil {
 		logrus.WithError(err).Errorln("Error making request")
 		return
@@ -33,21 +34,27 @@ func GetAllMetricAttributes(promAPIEndPoint string, metricsList map[string]Metri
 		logrus.WithError(err).Errorln("Error parsing json")
 		return
 	}
-	logrus.WithFields(logrus.Fields{
-		"[]": len(data["data"].(map[string]interface{})),
-	}).Debug("Metrics Count is ")
-	// var metricList = make(map[string]MetricAttributes)
+	// var metricList = make(map[string]MetricMetadata)
 	for key, metrics := range data["data"].(map[string]interface{}) {
 		for _, metric := range metrics.([]interface{}) {
-			var metricAttribute MetricAttributes
-			metricAttribute.metricType = metric.(map[string]interface{})["type"].(string)
-			metricAttribute.metricHelp = metric.(map[string]interface{})["help"].(string)
-			metricAttribute.metricUnit = metric.(map[string]interface{})["unit"].(string)
-			metricsList[key] = metricAttribute
-			// fmt.Printf("Metric: %s, Type: %s, Help: %s, Unit: %s", key, metricAttribute.metricType, metricAttribute.metricHelp, metricAttribute.metricUnit)
+			var metricMetadata MetricMetadata
+			logrus.Debugf("Processing Metric %s, Metadata to be included %s", key, includedMetaData)
+
+			if strings.Contains(strings.ToLower(includedMetaData), "type") {
+				metricMetadata.metricType = metric.(map[string]interface{})["type"].(string)
+				logrus.Debugf("Type is %s", metricMetadata.metricType)
+			}
+			if strings.Contains(strings.ToLower(includedMetaData), "help") {
+				metricMetadata.metricHelp = metric.(map[string]interface{})["help"].(string)
+				logrus.Debugf("Help is %s", metricMetadata.metricHelp)
+			}
+			if strings.Contains(strings.ToLower(includedMetaData), "unit") {
+				metricMetadata.metricUnit = metric.(map[string]interface{})["unit"].(string)
+				logrus.Debugf("Unit is %s", metricMetadata.metricUnit)
+			}
+			metricsList[key] = metricMetadata
+			// fmt.Printf("Metric: %s, Type: %s, Help: %s, Unit: %s", key, metricMetadata.metricType, metricMetadata.metricHelp, metricMetadata.metricUnit)
 		}
 	}
-	logrus.WithFields(logrus.Fields{
-		"[]": len(metricsList),
-	}).Debug("Map Size is ")
+	logrus.Debugf("Total number of metrics parsed is %v", len(metricsList))
 }

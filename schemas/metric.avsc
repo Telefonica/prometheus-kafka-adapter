@@ -7,9 +7,6 @@
         {"name": "timestamp", "type": "string"},
         {"name": "value", "type": "string"},
         {"name": "name", "type": "string"},
-        {"name": "type", "type": "string"},
-        {"name": "help", "type": "string"},
-        {"name": "unit", "type": "string"},
         {"name": "labels", "type": { "type": "map", "values": "string"} }
     ]
 }

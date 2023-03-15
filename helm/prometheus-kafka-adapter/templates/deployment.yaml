@@ -39,8 +39,6 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: PROM_API_ENDPOINT
-            value: {{ .Values.environment.PROM_API_ENDPOINT | quote }} # may want customizable service references
           - name: KAFKA_BROKER_LIST
             value: {{ tpl .Values.environment.KAFKA_BROKER_LIST . }} # may want customizable service references
           - name: KAFKA_TOPIC
@@ -93,6 +91,10 @@ spec:
                 name: {{ include "prometheus-kafka-adapter.fullname" . }}
                 key: KAFKA_SSL_CLIENT_KEY_PASS
           {{- end }}
+          - name: PROM_METADATA_ENDPOINT
+            value: {{ .Values.environment.PROM_METADATA_ENDPOINT | quote }} # may want customizable service references
+          - name: INLCUDED_METADATA
+            value: {{ .Values.environment.INLCUDED_METADATA | quote }} # may want customizable service references
           ports:
             - name: http
               containerPort: {{ .Values.environment.PORT }}
