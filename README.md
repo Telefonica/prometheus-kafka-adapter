@@ -9,6 +9,7 @@ Prometheus-kafka-adapter is a service which receives [Prometheus](https://github
 It is able to write JSON or Avro-JSON messages in a kafka topic, depending on the `SERIALIZATION_FORMAT` configuration variable. 
 
 Metric metadata can be included in the JSON output, if the `PROM_METADATA_ENDPOINT` is set to correct API endpoint of the prometheus service, eg http://localhost:9090/api/v1/metadata.
+Only the metrics which are available at application startup will have the metadata included. To inlcude metadata for newer metrics, the application will need to be restarted
 ### JSON
 
 ```json
