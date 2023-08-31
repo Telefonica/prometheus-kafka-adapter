@@ -48,6 +48,7 @@ Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends th
 - `BASIC_AUTH_PASSWORD`: basic auth password to be used for receive endpoint, defaults is no basic auth.
 - `LOG_LEVEL`: defines log level for [`logrus`](https://github.com/sirupsen/logrus), can be `debug`, `info`, `warn`, `error`, `fatal` or `panic`, defaults to `info`.
 - `GIN_MODE`: manage [gin](https://github.com/gin-gonic/gin) debug logging, can be `debug` or `release`.
+- `MATCH`: filter which metrics and labels to send to kafka. Used to limit the amount of data that is sent to kafka - by default everything is send. Example:   "['metric-1{label-1=\"label-value-1\"}','metric-2']"
 
 To connect to Kafka over SSL define the following additional environment variables:
 
