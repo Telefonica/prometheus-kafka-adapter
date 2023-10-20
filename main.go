@@ -60,6 +60,10 @@ func main() {
 		kafkaConfig["sasl.mechanism"] = kafkaSaslMechanism
 		kafkaConfig["sasl.username"] = kafkaSaslUsername
 		kafkaConfig["sasl.password"] = kafkaSaslPassword
+
+		if kafkaSslCACertFile != "" {
+		    kafkaConfig["ssl.ca.location"] = kafkaSslCACertFile
+		}
 	}
 
 	producer, err := kafka.NewProducer(&kafkaConfig)
