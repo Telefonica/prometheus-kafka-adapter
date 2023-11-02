@@ -65,6 +65,10 @@ environment:
   KAFKA_SSL_CA_CERT_FILE:
   # defines the match rules, simple metric name match and label match
   MATCH:
+  # defines the API endpoint of the prometheus server to read the metadata of the metrics from, eg http://localhost:9090/api/v1/metadata. If this is not set,metadata is not included in the topic message
+  PROM_METADATA_ENDPOINT: ""
+  # defines the metadata to be included in the topic if PROM_METADATA_ENDPOINT is set. Permitted values are type , unit & help. They need to be in CSV format. Defaulted to type
+  INLCUDED_METADATA: "type"
 
 serviceAccount:
   # Specifies whether a service account should be created

@@ -49,17 +49,33 @@ func Serialize(s Serializer, req *prompb.WriteRequest) (map[string][][]byte, err
 
 		for _, sample := range ts.Samples {
 			name := string(labels["__name__"])
+
 			if !filter(name, labels) {
 				objectsFiltered.Add(float64(1))
 				continue
 			}
-
 			epoch := time.Unix(sample.Timestamp/1000, 0).UTC()
 			m := map[string]interface{}{
 				"timestamp": epoch.Format(time.RFC3339),
 				"value":     strconv.FormatFloat(sample.Value, 'f', -1, 64),
 				"name":      name,
 				"labels":    labels,
+			}
+
+			if getMetricMetadata {
+				val, ok := metricsList[name]
+
+				if ok {
+					if val.metricType != "" {
+						m["type"] = val.metricType
+					}
+					if val.metricUnit != "" {
+						m["unit"] = val.metricUnit
+					}
+					if val.metricHelp != "" {
+						m["help"] = val.metricHelp
+					}
+				}
 			}
 
 			data, err := s.Marshal(m)
