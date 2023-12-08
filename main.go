@@ -33,6 +33,7 @@ func main() {
 		"batch.num.messages":  kafkaBatchNumMessages,
 		"go.batch.producer":   true,  // Enable batch producer (for increased performance).
 		"go.delivery.reports": false, // per-message delivery reports to the Events() channel
+		"acks":                kafkaAcks,
 	}
 
 	if kafkaSslClientCertFile != "" && kafkaSslClientKeyFile != "" && kafkaSslCACertFile != "" {
@@ -62,7 +63,7 @@ func main() {
 		kafkaConfig["sasl.password"] = kafkaSaslPassword
 
 		if kafkaSslCACertFile != "" {
-		    kafkaConfig["ssl.ca.location"] = kafkaSslCACertFile
+			kafkaConfig["ssl.ca.location"] = kafkaSslCACertFile
 		}
 	}
 
