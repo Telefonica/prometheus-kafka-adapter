@@ -6,8 +6,10 @@ Prometheus-kafka-adapter is a service which receives [Prometheus](https://github
 
 ## output
 
-It is able to write JSON or Avro-JSON messages in a kafka topic, depending on the `SERIALIZATION_FORMAT` configuration variable.
+It is able to write JSON or Avro-JSON messages in a kafka topic, depending on the `SERIALIZATION_FORMAT` configuration variable. 
 
+Metric metadata can be included in the JSON output, if the `PROM_METADATA_ENDPOINT` is set to correct API endpoint of the prometheus service, eg http://localhost:9090/api/v1/metadata.
+Only the metrics which are available at application startup will have the metadata included. To inlcude metadata for newer metrics, the application will need to be restarted
 ### JSON
 
 ```json
@@ -15,12 +17,14 @@ It is able to write JSON or Avro-JSON messages in a kafka topic, depending on th
   "timestamp": "1970-01-01T00:00:00Z",
   "value": "9876543210",
   "name": "up",
-
   "labels": {
     "__name__": "up",
     "label1": "value1",
     "label2": "value2"
-  }
+  },
+  "type": "type",
+  "help": "help",
+  "unit": "unit"
 }
 ```
 
@@ -38,6 +42,8 @@ There is a docker image `telefonica/prometheus-kafka-adapter:1.9.1` [available o
 
 Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends them to Kafka. This behaviour can be configured with the following environment variables:
 
+- `PROM_METADATA_ENDPOINT`: defines prometheus metric metadata endpoint , not set by default and hence metadata wont be included.
+- `INLCUDED_METADATA`: specifies which attributes to be exported. The attributes should be comma separated. Permitted values are _type_, _help_ and _unit_. Only _type_ is included by default
 - `KAFKA_BROKER_LIST`: defines kafka endpoint and port, defaults to `kafka:9092`.
 - `KAFKA_TOPIC`: defines kafka topic to be used, defaults to `metrics`. Could use go template, labels are passed (as a map) to the template: e.g: `metrics.{{ index . "__name__" }}` to use per-metric topic. Two template functions are available: replace (`{{ index . "__name__" | replace "message" "msg" }}`) and substring (`{{ index . "__name__" | substring 0 5 }}`)
 - `KAFKA_COMPRESSION`: defines the compression type to be used, defaults to `none`.
