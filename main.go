@@ -62,7 +62,7 @@ func main() {
 		kafkaConfig["sasl.password"] = kafkaSaslPassword
 
 		if kafkaSslCACertFile != "" {
-		    kafkaConfig["ssl.ca.location"] = kafkaSslCACertFile
+			kafkaConfig["ssl.ca.location"] = kafkaSslCACertFile
 		}
 	}
 
