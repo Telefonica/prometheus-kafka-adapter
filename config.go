@@ -16,12 +16,13 @@ package main
 
 import (
 	"fmt"
-	dto "github.com/prometheus/client_model/go"
-	"github.com/prometheus/common/expfmt"
-	"gopkg.in/yaml.v2"
 	"os"
 	"strings"
 	"text/template"
+
+	dto "github.com/prometheus/client_model/go"
+	"github.com/prometheus/common/expfmt"
+	"gopkg.in/yaml.v2"
 
 	"github.com/sirupsen/logrus"
 )
@@ -45,6 +46,7 @@ var (
 	kafkaSaslUsername      = ""
 	kafkaSaslPassword      = ""
 	serializer             Serializer
+	kafkaAcks              = "all"
 )
 
 func init() {
@@ -110,6 +112,9 @@ func init() {
 
 	if value := os.Getenv("KAFKA_SASL_PASSWORD"); value != "" {
 		kafkaSaslPassword = value
+	}
+	if value := os.Getenv("KAFKA_ACKS"); value != "" {
+		kafkaAcks = value
 	}
 
 	if value := os.Getenv("MATCH"); value != "" {
