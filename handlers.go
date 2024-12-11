@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -76,6 +77,14 @@ func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin
 				}, nil)
 
 				if err != nil {
+					if err.(kafka.Error).Code() == kafka.ErrQueueFull {
+						// Producer queue is full, wait 1s for messages
+						// to be delivered then try again.
+						logrus.Info("producer queue is full, waiting 1s")
+						time.Sleep(time.Second)
+						continue
+					}
+
 					objectsFailed.Add(float64(1))
 					c.AbortWithStatus(http.StatusInternalServerError)
 					logrus.WithError(err).Debug(fmt.Sprintf("Failing metric %v", metric))

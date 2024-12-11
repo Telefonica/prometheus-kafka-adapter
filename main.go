@@ -31,6 +31,7 @@ func main() {
 		"bootstrap.servers":   kafkaBrokerList,
 		"compression.codec":   kafkaCompression,
 		"batch.num.messages":  kafkaBatchNumMessages,
+		"linger.ms":           kafkaLingerMs,
 		"go.batch.producer":   true,  // Enable batch producer (for increased performance).
 		"go.delivery.reports": false, // per-message delivery reports to the Events() channel
 		"acks":                kafkaAcks,

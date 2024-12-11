@@ -42,6 +42,7 @@ Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends th
 - `KAFKA_TOPIC`: defines kafka topic to be used, defaults to `metrics`. Could use go template, labels are passed (as a map) to the template: e.g: `metrics.{{ index . "__name__" }}` to use per-metric topic. Two template functions are available: replace (`{{ index . "__name__" | replace "message" "msg" }}`) and substring (`{{ index . "__name__" | substring 0 5 }}`)
 - `KAFKA_COMPRESSION`: defines the compression type to be used, defaults to `none`.
 - `KAFKA_BATCH_NUM_MESSAGES`: defines the number of messages to batch write, defaults to `10000`.
+- `KAFKA_LINGER_MS`:  Delay in milliseconds to wait for messages in the producer queue to accumulate before constructing message batches, defaults to `5`.
 - `SERIALIZATION_FORMAT`: defines the serialization format, can be `json`, `avro-json`, defaults to `json`.
 - `PORT`: defines http port to listen, defaults to `8080`, used directly by [gin](https://github.com/gin-gonic/gin).
 - `BASIC_AUTH_USERNAME`: basic auth username to be used for receive endpoint, defaults is no basic auth.
