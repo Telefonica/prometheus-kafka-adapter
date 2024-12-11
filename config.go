@@ -104,7 +104,7 @@ func init() {
 	}
 
 	if value := os.Getenv("KAFKA_SECURITY_PROTOCOL"); value != "" {
-		kafkaSecurityProtocol = strings.ToLower(value)
+		kafkaSecurityProtocol = value
 	}
 
 	if value := os.Getenv("KAFKA_SASL_MECHANISM"); value != "" {

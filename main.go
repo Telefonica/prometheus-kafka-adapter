@@ -42,7 +42,7 @@ func main() {
 			kafkaSecurityProtocol = "ssl"
 		}
 
-		if kafkaSecurityProtocol != "ssl" && kafkaSecurityProtocol != "sasl_ssl" {
+		if kafkaSecurityProtocol != "ssl" && kafkaSecurityProtocol != "SASL_SSL" {
 			logrus.Fatal("invalid config: kafka security protocol is not ssl based but ssl config is provided")
 		}
 
@@ -54,7 +54,7 @@ func main() {
 	}
 
 	if kafkaSaslMechanism != "" && kafkaSaslUsername != "" && kafkaSaslPassword != "" {
-		if kafkaSecurityProtocol != "sasl_ssl" && kafkaSecurityProtocol != "sasl_plaintext" {
+		if kafkaSecurityProtocol != "SASL_SSL" && kafkaSecurityProtocol != "SASL_PLAINTEXT" {
 			logrus.Fatal("invalid config: kafka security protocol is not sasl based but sasl config is provided")
 		}
 
