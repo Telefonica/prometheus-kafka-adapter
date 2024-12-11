@@ -32,7 +32,6 @@ func main() {
 		"compression.codec":            kafkaCompression,
 		"batch.num.messages":           kafkaBatchNumMessages,
 		"queue.buffering.max.messages": kafkaBatchNumMessages,
-		"delivery.report.only.error":   true,
 		"enable.metrics.push":          true,
 		"enable.idempotence":           true,
 		"linger.ms":                    kafkaLingerMs,
