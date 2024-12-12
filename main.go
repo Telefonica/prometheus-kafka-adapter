@@ -28,15 +28,15 @@ func main() {
 	logrus.Info("creating kafka producer")
 
 	kafkaConfig := kafka.ConfigMap{
-		"bootstrap.servers":            kafkaBrokerList,
-		"compression.codec":            kafkaCompression,
-		"batch.num.messages":           kafkaBatchNumMessages,
-		"queue.buffering.max.messages": kafkaBatchNumMessages,
-		"enable.idempotence":           true,
-		"linger.ms":                    kafkaLingerMs,
-		"go.batch.producer":            true,  // Enable batch producer (for increased performance).
-		"go.delivery.reports":          false, // per-message delivery reports to the Events() channel
-		"acks":                         kafkaAcks,
+		"bootstrap.servers":      kafkaBrokerList,
+		"compression.codec":      kafkaCompression,
+		"batch.num.messages":     kafkaBatchNumMessages,
+		"batch.size":             kafkaBatchSize,
+		"linger.ms":              kafkaLingerMs,
+		"go.batch.producer":      true, // Enable batch producer (for increased performance).
+		"go.delivery.reports":    true, // per-message delivery reports to the Events() channel
+		"go.logs.channel.enable": true,
+		"acks":                   kafkaAcks,
 	}
 
 	if kafkaSslClientCertFile != "" && kafkaSslClientKeyFile != "" && kafkaSslCACertFile != "" {

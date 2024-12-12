@@ -37,6 +37,7 @@ var (
 	basicauthPassword      = ""
 	kafkaCompression       = "none"
 	kafkaBatchNumMessages  = "10000"
+	kafkaBatchSize         = "1000000"
 	kafkaLingerMs          = "5"
 	kafkaSslClientCertFile = ""
 	kafkaSslClientKeyFile  = ""
@@ -81,6 +82,10 @@ func init() {
 
 	if value := os.Getenv("KAFKA_BATCH_NUM_MESSAGES"); value != "" {
 		kafkaBatchNumMessages = value
+	}
+
+	if value := os.Getenv("KAFKA_BATCH_SIZE"); value != "" {
+		kafkaBatchSize = value
 	}
 
 	if value := os.Getenv("KAFKA_LINGER_MS"); value != "" {
