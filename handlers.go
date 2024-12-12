@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -75,7 +76,36 @@ func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin
 					Value:          metric,
 				}, nil)
 
+				go func() {
+					for event := range producer.Events() {
+						switch ev := event.(type) {
+						case *kafka.Message:
+							message := ev
+							if message.TopicPartition.Error != nil {
+								logrus.WithError(message.TopicPartition.Error).Errorf("failed to deliver message: %v",
+									message.TopicPartition)
+							} else {
+								logrus.Debugf("delivered to topic %s [%d] at offset %v",
+									*message.TopicPartition.Topic,
+									message.TopicPartition.Partition,
+									message.TopicPartition.Offset)
+							}
+						case kafka.Error:
+							logrus.WithError(err).Errorf("Error: %v", ev)
+						default:
+							logrus.Infof("Ignored event: %s", ev)
+						}
+					}
+				}()
+
 				if err != nil {
+					if err.(kafka.Error).Code() == kafka.ErrQueueFull {
+						// Producer queue is full, wait 1s for messages to delivered
+						// Maybe we should fail fast? As we are losing data...
+						logrus.Warning("producer queue is full, waiting 1s")
+						time.Sleep(time.Second)
+					}
+
 					objectsFailed.Add(float64(1))
 					c.AbortWithStatus(http.StatusInternalServerError)
 					logrus.WithError(err).Debug(fmt.Sprintf("Failing metric %v", metric))
