@@ -44,7 +44,11 @@ Prometheus-kafka-adapter listens for metrics coming from Prometheus and sends th
 - `KAFKA_BATCH_NUM_MESSAGES`: defines the number of messages to batch write, defaults to `10000`.
 - `KAFKA_BATCH_SIZE`: Maximum size (in bytes) of all messages batched in one MessageSet, including protocol framing overhead, defaults to `1000000`.
 - `KAFKA_LINGER_MS`:  Delay in milliseconds to wait for messages in the producer queue to accumulate before constructing message batches, defaults to `5`.
-- `SERIALIZATION_FORMAT`: defines the serialization format, can be `json`, `avro-json`, defaults to `json`.
+- `SERIALIZATION_FORMAT`: defines the serialization format, can be `json`, `avro-json`, `avro-schema-registry`, defaults to `json`.
+- `SCHEMA_REGISTRY_URL`: defines the schema registry url to be used, only used if `SERIALIZATION_FORMAT=avro-schema-registry`.
+- `SCHEMA_REGISTRY_USERNAME`: defines the schema registry username to be used, only used if `SERIALIZATION_FORMAT=avro-schema-registry`.
+- `SCHEMA_REGISTRY_PASSWORD`: defines the schema registry password to be used, only used if `SERIALIZATION_FORMAT=avro-schema-registry`.
+- `SCHEMA_REGISTRY_AUTO_REGISTRY_SCHEMAS`: defines the schema registry auto registry schema, only used if `SERIALIZATION_FORMAT=avro-schema-registry`, defaults to `false`.
 - `PORT`: defines http port to listen, defaults to `8080`, used directly by [gin](https://github.com/gin-gonic/gin).
 - `BASIC_AUTH_USERNAME`: basic auth username to be used for receive endpoint, defaults is no basic auth.
 - `BASIC_AUTH_PASSWORD`: basic auth password to be used for receive endpoint, defaults is no basic auth.

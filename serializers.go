@@ -17,6 +17,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/serde/avrov2"
 	"io/ioutil"
 	"strconv"
 	"time"
@@ -26,11 +27,21 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/linkedin/goavro"
+
+	"github.com/confluentinc/confluent-kafka-go/v2/schemaregistry"
+	"github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/serde"
 )
 
 // Serializer represents an abstract metrics serializer
 type Serializer interface {
-	Marshal(metric map[string]interface{}) ([]byte, error)
+	Marshal(metric map[string]interface{}, topic string) ([]byte, error)
+}
+
+type Metric struct {
+	Timestamp string            `json:"timestamp" avro:"timestamp"`
+	Value     string            `json:"value" avro:"value"`
+	Name      string            `json:"name" avro:"name"`
+	Labels    map[string]string `json:"labels" avro:"labels"`
 }
 
 // Serialize generates the JSON representation for a given Prometheus metric.
@@ -61,8 +72,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) (map[string][][]byte, err
 				"name":      name,
 				"labels":    labels,
 			}
-
-			data, err := s.Marshal(m)
+			data, err := s.Marshal(m, t)
 			if err != nil {
 				serializeFailed.Add(float64(1))
 				logrus.WithError(err).Errorln("couldn't marshal timeseries")
@@ -79,7 +89,7 @@ func Serialize(s Serializer, req *prompb.WriteRequest) (map[string][][]byte, err
 type JSONSerializer struct {
 }
 
-func (s *JSONSerializer) Marshal(metric map[string]interface{}) ([]byte, error) {
+func (s *JSONSerializer) Marshal(metric map[string]interface{}, topic string) ([]byte, error) {
 	return json.Marshal(metric)
 }
 
@@ -92,7 +102,7 @@ type AvroJSONSerializer struct {
 	codec *goavro.Codec
 }
 
-func (s *AvroJSONSerializer) Marshal(metric map[string]interface{}) ([]byte, error) {
+func (s *AvroJSONSerializer) Marshal(metric map[string]interface{}, topic string) ([]byte, error) {
 	return s.codec.TextualFromNative(nil, metric)
 }
 
@@ -112,6 +122,52 @@ func NewAvroJSONSerializer(schemaPath string) (*AvroJSONSerializer, error) {
 
 	return &AvroJSONSerializer{
 		codec: codec,
+	}, nil
+}
+
+type SchemaRegistrySerializer struct {
+	ser *avrov2.Serializer
+}
+
+func (s SchemaRegistrySerializer) Marshal(metric map[string]interface{}, topic string) ([]byte, error) {
+	m := mapToMetric(metric)
+	return s.ser.Serialize(topic, &m)
+}
+
+func mapToMetric(metric map[string]interface{}) Metric {
+	return Metric{
+		Timestamp: metric["timestamp"].(string),
+		Value:     metric["value"].(string),
+		Name:      metric["name"].(string),
+		Labels:    metric["labels"].(map[string]string),
+	}
+}
+
+func NewAvroSchemaRegistrySerializer(schemaRegistryAPIEndpoint string, schemaRegistryAPIKey string, schemaRegistryAPISecret string) (*SchemaRegistrySerializer, error) {
+
+	client, err := schemaregistry.NewClient(schemaregistry.NewConfigWithBasicAuthentication(
+		schemaRegistryAPIEndpoint,
+		schemaRegistryAPIKey,
+		schemaRegistryAPISecret,
+	))
+
+	if err != nil {
+		logrus.WithError(err).Errorln("Failed to create schema registry client.")
+		return nil, err
+	}
+
+	config := avrov2.NewSerializerConfig()
+	config.AutoRegisterSchemas = schemaRegistryAutoRegisterSchemas
+
+	ser, err := avrov2.NewSerializer(client, serde.ValueSerde, config)
+
+	if err != nil {
+		logrus.WithError(err).Errorln("Failed to create serializer")
+		return nil, err
+	}
+
+	return &SchemaRegistrySerializer{
+		ser: ser,
 	}, nil
 }
 

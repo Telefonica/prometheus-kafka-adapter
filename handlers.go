@@ -16,6 +16,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -23,7 +24,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/golang/snappy"
 
 	"github.com/gogo/protobuf/proto"

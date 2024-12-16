@@ -38,10 +38,16 @@ github.com/cloudwego/base64x
 ## explicit; go 1.16
 github.com/cloudwego/iasm/expr
 github.com/cloudwego/iasm/x86_64
-# github.com/confluentinc/confluent-kafka-go v1.9.2
-## explicit; go 1.13
-github.com/confluentinc/confluent-kafka-go/kafka
-github.com/confluentinc/confluent-kafka-go/kafka/librdkafka_vendor
+# github.com/confluentinc/confluent-kafka-go/v2 v2.6.1
+## explicit; go 1.21
+github.com/confluentinc/confluent-kafka-go/v2/kafka
+github.com/confluentinc/confluent-kafka-go/v2/kafka/librdkafka_vendor
+github.com/confluentinc/confluent-kafka-go/v2/schemaregistry
+github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/cache
+github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/internal
+github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/rest
+github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/serde
+github.com/confluentinc/confluent-kafka-go/v2/schemaregistry/serde/avrov2
 # github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 ## explicit
 github.com/davecgh/go-spew/spew
@@ -93,12 +99,31 @@ github.com/gogo/protobuf/protoc-gen-gogo/descriptor
 # github.com/golang/snappy v0.0.4
 ## explicit
 github.com/golang/snappy
+# github.com/grafana/regexp v0.0.0-20240518133315-a468a5bfb3bc
+## explicit; go 1.21
+github.com/grafana/regexp
+github.com/grafana/regexp/syntax
+# github.com/hamba/avro/v2 v2.24.0
+## explicit; go 1.20
+github.com/hamba/avro/v2
+github.com/hamba/avro/v2/pkg/crc64
 # github.com/json-iterator/go v1.1.12
 ## explicit; go 1.12
 github.com/json-iterator/go
+# github.com/klauspost/compress v1.17.10
+## explicit; go 1.21
+github.com/klauspost/compress
+github.com/klauspost/compress/fse
+github.com/klauspost/compress/huff0
+github.com/klauspost/compress/internal/cpuinfo
+github.com/klauspost/compress/internal/snapref
+github.com/klauspost/compress/zstd
+github.com/klauspost/compress/zstd/internal/xxhash
 # github.com/klauspost/cpuid/v2 v2.2.7
 ## explicit; go 1.15
 github.com/klauspost/cpuid/v2
+# github.com/kr/text v0.2.0
+## explicit
 # github.com/leodido/go-urn v1.4.0
 ## explicit; go 1.18
 github.com/leodido/go-urn
@@ -109,12 +134,20 @@ github.com/linkedin/goavro
 # github.com/mattn/go-isatty v0.0.20
 ## explicit; go 1.15
 github.com/mattn/go-isatty
+# github.com/mitchellh/mapstructure v1.5.0
+## explicit; go 1.14
+github.com/mitchellh/mapstructure
+# github.com/moby/sys/userns v0.1.0
+## explicit; go 1.21
 # github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
 ## explicit
 github.com/modern-go/concurrent
 # github.com/modern-go/reflect2 v1.0.2
 ## explicit; go 1.12
 github.com/modern-go/reflect2
+# github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
+## explicit
+github.com/munnerz/goautoneg
 # github.com/pelletier/go-toml/v2 v2.2.2
 ## explicit; go 1.16
 github.com/pelletier/go-toml/v2
@@ -125,33 +158,38 @@ github.com/pelletier/go-toml/v2/unstable
 # github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2
 ## explicit
 github.com/pmezard/go-difflib/difflib
-# github.com/prometheus/client_golang v1.19.1
+# github.com/prometheus/client_golang v1.20.5
 ## explicit; go 1.20
+github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil
+github.com/prometheus/client_golang/internal/github.com/golang/gddo/httputil/header
 github.com/prometheus/client_golang/prometheus
 github.com/prometheus/client_golang/prometheus/internal
 github.com/prometheus/client_golang/prometheus/promhttp
 # github.com/prometheus/client_model v0.6.1
 ## explicit; go 1.19
 github.com/prometheus/client_model/go
-# github.com/prometheus/common v0.53.0
-## explicit; go 1.20
+# github.com/prometheus/common v0.61.0
+## explicit; go 1.21
 github.com/prometheus/common/expfmt
-github.com/prometheus/common/internal/bitbucket.org/ww/goautoneg
 github.com/prometheus/common/model
-# github.com/prometheus/procfs v0.12.0
-## explicit; go 1.19
+# github.com/prometheus/procfs v0.15.1
+## explicit; go 1.20
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
-# github.com/prometheus/prometheus v0.52.1
-## explicit; go 1.21
+# github.com/prometheus/prometheus v0.300.1
+## explicit; go 1.22.0
+github.com/prometheus/prometheus/model/exemplar
+github.com/prometheus/prometheus/model/histogram
+github.com/prometheus/prometheus/model/labels
 github.com/prometheus/prometheus/prompb
 # github.com/sirupsen/logrus v1.9.3
 ## explicit; go 1.13
 github.com/sirupsen/logrus
-# github.com/stretchr/testify v1.9.0
+# github.com/stretchr/testify v1.10.0
 ## explicit; go 1.17
 github.com/stretchr/testify/assert
+github.com/stretchr/testify/assert/yaml
 # github.com/twitchyliquid64/golang-asm v0.15.1
 ## explicit; go 1.13
 github.com/twitchyliquid64/golang-asm/asm/arch
@@ -177,10 +215,10 @@ github.com/ugorji/go/codec
 # golang.org/x/arch v0.8.0
 ## explicit; go 1.18
 golang.org/x/arch/x86/x86asm
-# golang.org/x/crypto v0.23.0
-## explicit; go 1.18
+# golang.org/x/crypto v0.30.0
+## explicit; go 1.20
 golang.org/x/crypto/sha3
-# golang.org/x/net v0.25.0
+# golang.org/x/net v0.32.0
 ## explicit; go 1.18
 golang.org/x/net/html
 golang.org/x/net/html/atom
@@ -189,12 +227,12 @@ golang.org/x/net/http2
 golang.org/x/net/http2/h2c
 golang.org/x/net/http2/hpack
 golang.org/x/net/idna
-# golang.org/x/sys v0.20.0
+# golang.org/x/sys v0.28.0
 ## explicit; go 1.18
 golang.org/x/sys/cpu
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/text v0.15.0
+# golang.org/x/text v0.21.0
 ## explicit; go 1.18
 golang.org/x/text/internal/language
 golang.org/x/text/internal/language/compact
@@ -204,8 +242,8 @@ golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
-# google.golang.org/protobuf v1.34.1
-## explicit; go 1.17
+# google.golang.org/protobuf v1.35.2
+## explicit; go 1.21
 google.golang.org/protobuf/encoding/protodelim
 google.golang.org/protobuf/encoding/prototext
 google.golang.org/protobuf/encoding/protowire
