@@ -15,9 +15,9 @@
 package main
 
 import (
+	"github.com/confluentinc/confluent-kafka-go/v2/kafka"
 	"time"
 
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/gin-gonic/contrib/ginrus"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -28,12 +28,15 @@ func main() {
 	logrus.Info("creating kafka producer")
 
 	kafkaConfig := kafka.ConfigMap{
-		"bootstrap.servers":   kafkaBrokerList,
-		"compression.codec":   kafkaCompression,
-		"batch.num.messages":  kafkaBatchNumMessages,
-		"go.batch.producer":   true,  // Enable batch producer (for increased performance).
-		"go.delivery.reports": false, // per-message delivery reports to the Events() channel
-		"acks":                kafkaAcks,
+		"bootstrap.servers":      kafkaBrokerList,
+		"compression.codec":      kafkaCompression,
+		"batch.num.messages":     kafkaBatchNumMessages,
+		"batch.size":             kafkaBatchSize,
+		"linger.ms":              kafkaLingerMs,
+		"go.batch.producer":      true, // Enable batch producer (for increased performance).
+		"go.delivery.reports":    true, // per-message delivery reports to the Events() channel
+		"go.logs.channel.enable": true,
+		"acks":                   kafkaAcks,
 	}
 
 	if kafkaSslClientCertFile != "" && kafkaSslClientKeyFile != "" && kafkaSslCACertFile != "" {
@@ -41,7 +44,7 @@ func main() {
 			kafkaSecurityProtocol = "ssl"
 		}
 
-		if kafkaSecurityProtocol != "ssl" && kafkaSecurityProtocol != "sasl_ssl" {
+		if kafkaSecurityProtocol != "ssl" && kafkaSecurityProtocol != "SASL_SSL" {
 			logrus.Fatal("invalid config: kafka security protocol is not ssl based but ssl config is provided")
 		}
 
@@ -53,7 +56,7 @@ func main() {
 	}
 
 	if kafkaSaslMechanism != "" && kafkaSaslUsername != "" && kafkaSaslPassword != "" {
-		if kafkaSecurityProtocol != "sasl_ssl" && kafkaSecurityProtocol != "sasl_plaintext" {
+		if kafkaSecurityProtocol != "SASL_SSL" && kafkaSecurityProtocol != "SASL_PLAINTEXT" {
 			logrus.Fatal("invalid config: kafka security protocol is not sasl based but sasl config is provided")
 		}
 

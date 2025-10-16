@@ -17,6 +17,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -28,25 +29,31 @@ import (
 )
 
 var (
-	kafkaBrokerList        = "kafka:9092"
-	kafkaTopic             = "metrics"
-	topicTemplate          *template.Template
-	match                  = make(map[string]*dto.MetricFamily, 0)
-	basicauth              = false
-	basicauthUsername      = ""
-	basicauthPassword      = ""
-	kafkaCompression       = "none"
-	kafkaBatchNumMessages  = "10000"
-	kafkaSslClientCertFile = ""
-	kafkaSslClientKeyFile  = ""
-	kafkaSslClientKeyPass  = ""
-	kafkaSslCACertFile     = ""
-	kafkaSecurityProtocol  = ""
-	kafkaSaslMechanism     = ""
-	kafkaSaslUsername      = ""
-	kafkaSaslPassword      = ""
-	serializer             Serializer
-	kafkaAcks              = "all"
+	kafkaBrokerList                   = "kafka:9092"
+	kafkaTopic                        = "metrics"
+	topicTemplate                     *template.Template
+	match                             = make(map[string]*dto.MetricFamily, 0)
+	basicauth                         = false
+	basicauthUsername                 = ""
+	basicauthPassword                 = ""
+	kafkaCompression                  = "none"
+	kafkaBatchNumMessages             = "10000"
+	kafkaBatchSize                    = "1000000"
+	kafkaLingerMs                     = "5"
+	kafkaSslClientCertFile            = ""
+	kafkaSslClientKeyFile             = ""
+	kafkaSslClientKeyPass             = ""
+	kafkaSslCACertFile                = ""
+	kafkaSecurityProtocol             = ""
+	kafkaSaslMechanism                = ""
+	kafkaSaslUsername                 = ""
+	kafkaSaslPassword                 = ""
+	serializer                        Serializer
+	kafkaAcks                         = "all"
+	schemaRegistryUrl                 = ""
+	schemaRegistryUsername            = ""
+	schemaRegistryPassword            = ""
+	schemaRegistryAutoRegisterSchemas = false
 )
 
 func init() {
@@ -82,6 +89,14 @@ func init() {
 		kafkaBatchNumMessages = value
 	}
 
+	if value := os.Getenv("KAFKA_BATCH_SIZE"); value != "" {
+		kafkaBatchSize = value
+	}
+
+	if value := os.Getenv("KAFKA_LINGER_MS"); value != "" {
+		kafkaLingerMs = value
+	}
+
 	if value := os.Getenv("KAFKA_SSL_CLIENT_CERT_FILE"); value != "" {
 		kafkaSslClientCertFile = value
 	}
@@ -99,7 +114,7 @@ func init() {
 	}
 
 	if value := os.Getenv("KAFKA_SECURITY_PROTOCOL"); value != "" {
-		kafkaSecurityProtocol = strings.ToLower(value)
+		kafkaSecurityProtocol = value
 	}
 
 	if value := os.Getenv("KAFKA_SASL_MECHANISM"); value != "" {
@@ -123,6 +138,24 @@ func init() {
 			logrus.WithError(err).Fatalln("couldn't parse the match rules")
 		}
 		match = matchList
+	}
+
+	if value := os.Getenv("SCHEMA_REGISTRY_URL"); value != "" {
+		schemaRegistryUrl = value
+	}
+	if value := os.Getenv("SCHEMA_REGISTRY_USERNAME"); value != "" {
+		schemaRegistryUsername = value
+	}
+	if value := os.Getenv("SCHEMA_REGISTRY_PASSWORD"); value != "" {
+		schemaRegistryPassword = value
+	}
+	if value := os.Getenv("SCHEMA_REGISTRY_AUTO_REGISTRY_SCHEMAS"); value != "" {
+		v, err := strconv.ParseBool(value)
+		if err != nil {
+			logrus.WithError(err).Fatalln("couldn't parse SCHEMA_REGISTRY_AUTO_REGISTRY_SCHEMAS to bool, using false")
+			v = false
+		}
+		schemaRegistryAutoRegisterSchemas = v
 	}
 
 	var err error
@@ -175,6 +208,8 @@ func parseSerializationFormat(value string) (Serializer, error) {
 		return NewJSONSerializer()
 	case "avro-json":
 		return NewAvroJSONSerializer("schemas/metric.avsc")
+	case "avro-schema-registry":
+		return NewAvroSchemaRegistrySerializer(schemaRegistryUrl, schemaRegistryUsername, schemaRegistryPassword)
 	default:
 		logrus.WithField("serialization-format-value", value).Warningln("invalid serialization format, using json")
 		return NewJSONSerializer()
