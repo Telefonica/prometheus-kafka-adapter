@@ -4,6 +4,8 @@ GO_VER := 1.22.3
 LIBC_GO_VER := $(GO_VER)-bullseye
 MUSL_GO_VER := $(GO_VER)-alpine
 
+.PHONY: all fmt test build build-libc build-musl build-docker-image vendor-update clean
+
 all: fmt test build
 
 fmt:
