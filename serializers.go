@@ -17,7 +17,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
+	"os"
 	"strconv"
 	"time"
 
@@ -98,7 +98,7 @@ func (s *AvroJSONSerializer) Marshal(metric map[string]interface{}) ([]byte, err
 
 // NewAvroJSONSerializer builds a new instance of the AvroJSONSerializer
 func NewAvroJSONSerializer(schemaPath string) (*AvroJSONSerializer, error) {
-	schema, err := ioutil.ReadFile(schemaPath)
+	schema, err := os.ReadFile(schemaPath)
 	if err != nil {
 		logrus.WithError(err).Errorln("couldn't read avro schema")
 		return nil, err
