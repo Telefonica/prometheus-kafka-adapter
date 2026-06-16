@@ -19,6 +19,11 @@ import (
 	"os"
 	"strings"
 	"text/template"
+	"time"
+
+	dto "github.com/prometheus/client_model/go"
+	"github.com/prometheus/common/expfmt"
+	"gopkg.in/yaml.v2"
 
 	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
@@ -30,6 +35,9 @@ import (
 var (
 	kafkaBrokerList        = "kafka:9092"
 	kafkaTopic             = "metrics"
+	kafkaPartitionLabels   []string
+	kafkaMetadataTimeout   = time.Second * 10
+	kafkaMetadataInterval  = time.Minute * 5
 	topicTemplate          *template.Template
 	match                  = make(map[string]*dto.MetricFamily, 0)
 	basicauth              = false
@@ -63,6 +71,23 @@ func init() {
 
 	if value := os.Getenv("KAFKA_TOPIC"); value != "" {
 		kafkaTopic = value
+	}
+
+	if value := os.Getenv("KAFKA_PARTITION_LABELS"); value != "" {
+		kafkaPartitionLabels = strings.Split(value, ",")
+	}
+
+	if value := os.Getenv("KAFKA_METADATA_TIMEOUT"); value != "" {
+		d, err := time.ParseDuration(value)
+		if err != nil {
+			logrus.WithError(err).Errorf("KAFKA_METADATA_TIMEOUT parsing failed, using default")
+		} else {
+			if d < 0 {
+				logrus.Errorf("KAFKA_METADATA_TIMEOUT does not support negative timeout")
+			} else {
+				kafkaMetadataTimeout = d
+			}
+		}
 	}
 
 	if value := os.Getenv("BASIC_AUTH_USERNAME"); value != "" {

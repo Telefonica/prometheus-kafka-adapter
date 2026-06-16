@@ -16,8 +16,10 @@ package main
 
 import (
 	"fmt"
+	"hash/fnv"
 	"io/ioutil"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -62,11 +64,16 @@ func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin
 			return
 		}
 
-		for topic, metrics := range metricsPerTopic {
-			t := topic
+		for topicAndHashKey, metrics := range metricsPerTopic {
+
+			topic, partitionID, err := getPartitionAndTopic(topicAndHashKey)
+			if err != nil {
+				continue
+			}
+
 			part := kafka.TopicPartition{
-				Partition: kafka.PartitionAny,
-				Topic:     &t,
+				Partition: partitionID,
+				Topic:     &topic,
 			}
 			for _, metric := range metrics {
 				objectsWritten.Add(float64(1))
@@ -86,4 +93,21 @@ func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin
 		}
 
 	}
+}
+
+func getPartitionAndTopic(topic string) (string, int32, error) {
+	parts := strings.Split(topic, "|")
+
+	if len(parts) == 1 {
+		return parts[0], kafka.PartitionAny, nil
+	}
+	h := fnv.New32a()
+	h.Write([]byte(parts[1]))
+
+	v, ok := topicPartitionCount.Load(parts[0])
+	if !ok {
+		logrus.WithField("topic", parts[0]).Error("did not find metadata requested topic")
+		return topic, kafka.PartitionAny, fmt.Errorf("could not")
+	}
+	return parts[0], int32(h.Sum32() % uint32(v.(int))), nil
 }
