@@ -58,6 +58,7 @@ func main() {
 		}
 
 		kafkaConfig["security.protocol"] = kafkaSecurityProtocol
+		kafkaConfig["ssl.ca.location"] = kafkaSslCACertFile // CA certificate file for verifying the broker's certificate.
 		kafkaConfig["sasl.mechanism"] = kafkaSaslMechanism
 		kafkaConfig["sasl.username"] = kafkaSaslUsername
 		kafkaConfig["sasl.password"] = kafkaSaslPassword
