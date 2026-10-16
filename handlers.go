@@ -29,7 +29,26 @@ import (
 	"github.com/prometheus/prometheus/prompb"
 )
 
-func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin.Context) {
+type kafkaProducer interface {
+	Produce(msg *kafka.Message, deliveryChan chan kafka.Event) error
+}
+
+var _ kafkaProducer = (*kafka.Producer)(nil)
+
+// shouldSkipError reports whether the given error should be skipped
+// (logged and ignored) instead of aborting the batch.
+func shouldSkipError(err error) bool {
+	if !kafkaSupressUnknownTopicError {
+		return false
+	}
+	kafkaErr, ok := err.(kafka.Error)
+	if !ok {
+		return false
+	}
+	return kafkaErr.Code() == kafka.ErrUnknownTopic || kafkaErr.Code() == kafka.ErrUnknownTopicOrPart
+}
+
+func receiveHandler(producer kafkaProducer, serializer Serializer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 
 		httpRequestsTotal.Add(float64(1))
@@ -76,6 +95,10 @@ func receiveHandler(producer *kafka.Producer, serializer Serializer) func(c *gin
 				}, nil)
 
 				if err != nil {
+					if shouldSkipError(err) {
+						logrus.WithError(err).Error(fmt.Sprintf("couldn't produce message in kafka topic %v, unknown topic or partition", topic))
+						continue
+					}
 					objectsFailed.Add(float64(1))
 					c.AbortWithStatus(http.StatusInternalServerError)
 					logrus.WithError(err).Debug(fmt.Sprintf("Failing metric %v", metric))

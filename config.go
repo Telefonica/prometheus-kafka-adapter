@@ -47,6 +47,7 @@ var (
 	kafkaSaslPassword      = ""
 	serializer             Serializer
 	kafkaAcks              = "all"
+	kafkaSupressUnknownTopicError = false
 )
 
 func init() {
@@ -115,6 +116,9 @@ func init() {
 	}
 	if value := os.Getenv("KAFKA_ACKS"); value != "" {
 		kafkaAcks = value
+	}
+	if value := os.Getenv("KAFKA_SUPRESS_UNKNOWN_TOPIC_ERROR"); value != "" {
+		kafkaSupressUnknownTopicError = strings.EqualFold(value, "true")
 	}
 
 	if value := os.Getenv("MATCH"); value != "" {
