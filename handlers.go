@@ -35,6 +35,19 @@ type kafkaProducer interface {
 
 var _ kafkaProducer = (*kafka.Producer)(nil)
 
+// shouldSkipError reports whether the given error should be skipped
+// (logged and ignored) instead of aborting the batch.
+func shouldSkipError(err error) bool {
+	if !kafkaSupressUnknownTopicError {
+		return false
+	}
+	kafkaErr, ok := err.(kafka.Error)
+	if !ok {
+		return false
+	}
+	return kafkaErr.Code() == kafka.ErrUnknownTopic || kafkaErr.Code() == kafka.ErrUnknownTopicOrPart
+}
+
 func receiveHandler(producer kafkaProducer, serializer Serializer) func(c *gin.Context) {
 	return func(c *gin.Context) {
 
@@ -82,7 +95,7 @@ func receiveHandler(producer kafkaProducer, serializer Serializer) func(c *gin.C
 				}, nil)
 
 				if err != nil {
-					if kafkaErr, ok := err.(kafka.Error); ok && (kafkaErr.Code() == kafka.ErrUnknownTopic || kafkaErr.Code() == kafka.ErrUnknownTopicOrPart) {
+					if shouldSkipError(err) {
 						logrus.WithError(err).Error(fmt.Sprintf("couldn't produce message in kafka topic %v, unknown topic or partition", topic))
 						continue
 					}
